@@ -3,10 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Building2, Menu, Moon, Sun, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Header = () => {
-	const [isDarkMode, setIsDarkMode] = useState(false);
+	const [mounted, setMounted] = useState(false);
+
+	const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+		if (typeof window !== "undefined") {
+			return localStorage.getItem("theme") === "dark";
+		}
+		return false;
+	});
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const pathname = usePathname();
 
@@ -17,9 +24,22 @@ const Header = () => {
 		{ label: "Contact", path: "/contact" },
 	];
 
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	useEffect(() => {
+		if (!mounted) return;
+
+		document.documentElement.classList.toggle("dark", isDarkMode);
+		localStorage.setItem("theme", isDarkMode ? "dark" : "light");
+	}, [isDarkMode, mounted]);
+
 	const toggleDarkMode = () => {
-		setIsDarkMode(!isDarkMode);
+		setIsDarkMode((prev) => !prev);
 	};
+
+	if (!mounted) return null;
 
 	return (
 		<nav className="glass border-b border-border/50">
@@ -70,7 +90,7 @@ const Header = () => {
 
 						<div className="flex items-center gap-2">
 							<Link href="/login">
-								<Button className="bg-transparent transition-colors duration-300 text-[#1B222B] hover:text-white hover:bg-[#F59F0A]">
+								<Button className="bg-transparent transition-colors duration-300 text-[#1B222B] dark:text-white hover:text-white hover:bg-[#F59F0A]">
 									Sign In
 								</Button>
 							</Link>
@@ -141,6 +161,7 @@ const Header = () => {
 										Sign In
 									</Button>
 								</Link>
+
 								<Link
 									href="/register"
 									onClick={() => setMobileOpen(false)}
