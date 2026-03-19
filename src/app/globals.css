@@ -182,3 +182,40 @@
 		@apply font-sans;
 	}
 }
+
+@theme {
+	--breakpoint-sm: 576px;
+	--breakpoint-md: 768px;
+	--breakpoint-lg: 992px;
+	--breakpoint-xl: 1200px;
+	--breakpoint-2xl: 1400px;
+}
+
+@utility container {
+	margin-inline: auto;
+	padding-inline: 0.75rem; /* Bootstrap gutter feel */
+
+	@variant sm {
+		max-width: 540px;
+	}
+
+	@variant md {
+		max-width: 720px;
+	}
+
+	@variant lg {
+		max-width: 960px;
+	}
+
+	@variant xl {
+		max-width: 1140px;
+	}
+
+	@variant 2xl {
+		max-width: 1320px;
+	}
+}
+
+button {
+	cursor: pointer;
+}
