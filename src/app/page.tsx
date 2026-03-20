@@ -1,6 +1,7 @@
 "use client";
 
 import CategoriesSection from "@/components/pages/home/CategoriesSection";
+import FeaturedProperties from "@/components/pages/home/FeaturedProperties";
 import HeroSection from "@/components/pages/home/HeroSection";
 
 export default function Home() {
@@ -8,6 +9,7 @@ export default function Home() {
 		<>
 			<HeroSection />
 			<CategoriesSection />
+			<FeaturedProperties />
 		</>
 	);
 }

@@ -1,11 +1,10 @@
 import { categories } from "@/data/properties";
 import Link from "next/link";
-import React from "react";
 
 const CategoriesSection = () => {
 	return (
 		<section className="py-16">
-			<div className="container mx-auto px-4 sm:px-6 lg:px-8">
+			<div className="container">
 				<h2 className="font-display text-2xl md:text-3xl font-bold text-foreground mb-8">
 					Browse by Style
 				</h2>

@@ -63,7 +63,7 @@ const HeroSection = () => {
 				))}
 
 				{/* Content */}
-				<div className="relative container mx-auto px-4 sm:px-6 lg:px-8 z-10">
+				<div className="relative container z-10">
 					<motion.div
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
