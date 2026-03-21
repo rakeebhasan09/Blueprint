@@ -13,7 +13,7 @@ const CategoriesSection = () => {
 						<Link
 							key={cat.name}
 							href={`/explore?type=${cat.name}`}
-							className="shrink-0 flex flex-col items-center gap-2 p-6 rounded-2xl bg-card shadow-card border border-border/50 hover:shadow-elevated hover:border-primary/20 transition-all duration-300 ease-blueprint min-w-[120px]"
+							className="shrink-0 flex flex-col items-center gap-2 p-6 rounded-2xl bg-card shadow-card border border-border/50 hover:shadow-elevated hover:border-primary/20 transition-all duration-300 ease-blueprint min-w-30px"
 						>
 							<span className="text-3xl">{cat.icon}</span>
 							<span className="text-sm font-semibold text-foreground">

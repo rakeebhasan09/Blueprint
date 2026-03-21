@@ -282,3 +282,10 @@ export const categories = [
 	{ name: "Art Deco", icon: "✨", count: 15 },
 	{ name: "Sustainable", icon: "🌱", count: 27 },
 ];
+
+export const stats = [
+	{ label: "Average Yield", value: "6.4%", change: "+0.8%" },
+	{ label: "Active Listings", value: "1,420", change: "+124" },
+	{ label: "Cities Covered", value: "12", change: "+3" },
+	{ label: "Client Satisfaction", value: "98%", change: "+2%" },
+];
