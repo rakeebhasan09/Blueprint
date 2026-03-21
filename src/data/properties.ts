@@ -289,3 +289,87 @@ export const stats = [
 	{ label: "Cities Covered", value: "12", change: "+3" },
 	{ label: "Client Satisfaction", value: "98%", change: "+2%" },
 ];
+
+export const testimonials = [
+	{
+		name: "Alexander Chen",
+		role: "CEO, Meridian Capital",
+		text: "The Blueprint helped us acquire three landmark properties in Manhattan. Their market intelligence is unmatched.",
+		rating: 5,
+	},
+	{
+		name: "Sophia Laurent",
+		role: "Principal, Laurent Architecture",
+		text: "As an architect, I appreciate their eye for structural quality. Every listing meets exacting standards.",
+		rating: 5,
+	},
+	{
+		name: "Marcus Williams",
+		role: "Private Investor",
+		text: "4.8% appreciation on my portfolio in Q3 alone. The data-driven approach delivers real results.",
+		rating: 5,
+	},
+	{
+		name: "Sophia Martinez",
+		role: "Founder, Urban Nest Realty",
+		text: "Working with The Blueprint was a game changer. Their strategic insights helped us close high-value deals faster than ever.",
+		rating: 5,
+	},
+	{
+		name: "Liam O’Connor",
+		role: "Managing Director, Apex Developments",
+		text: "Their team understands the market deeply. Every recommendation was data-driven and incredibly effective.",
+		rating: 4,
+	},
+	{
+		name: "Aisha Rahman",
+		role: "Head of Investments, Greenfield Group",
+		text: "From consultation to execution, everything was seamless. We saw a significant return on our property investments.",
+		rating: 5,
+	},
+	{
+		name: "Daniel Kim",
+		role: "COO, Skyline Ventures",
+		text: "Professional, reliable, and highly knowledgeable. The Blueprint exceeded our expectations at every stage.",
+		rating: 5,
+	},
+	{
+		name: "Emily Carter",
+		role: "Real Estate Consultant, Prime Estates",
+		text: "Their expertise in premium property markets is outstanding. I would highly recommend them to serious investors.",
+		rating: 4,
+	},
+];
+
+export const blogPosts = [
+	{
+		id: "1",
+		title: "The Rise of Brutalist Architecture in Urban Living",
+		excerpt:
+			"How raw concrete and exposed structures are redefining luxury residential design in major cities.",
+		image: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=800&q=80",
+		author: "James Chen",
+		date: "2024-03-15",
+		category: "Architecture",
+	},
+	{
+		id: "2",
+		title: "Investment Guide: Waterfront Properties in 2024",
+		excerpt:
+			"Market analysis reveals waterfront properties outperform urban condos by 12% in annual returns.",
+		image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80",
+		author: "Sarah Mitchell",
+		date: "2024-03-08",
+		category: "Investment",
+	},
+	{
+		id: "3",
+		title: "Smart Homes: The Technology Behind Net-Zero Living",
+		excerpt:
+			"From solar roofs to geothermal systems, how technology is making sustainable luxury accessible.",
+		image: "https://images.unsplash.com/photo-1513584684374-8bab748fbf90?q=80&w=1165",
+		author: "Kevin Nguyen",
+		date: "2024-02-28",
+		category: "Technology",
+	},
+];

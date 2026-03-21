@@ -219,3 +219,7 @@
 button {
 	cursor: pointer;
 }
+
+.swiper-wrapper {
+	padding-bottom: 25px;
+}
