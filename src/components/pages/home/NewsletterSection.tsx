@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const NewsletterSection = () => {
 	const [email, setEmail] = useState("");
@@ -10,7 +11,10 @@ const NewsletterSection = () => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (!email) return;
+		if (!email) {
+			toast.error("Please enter your email");
+			return;
+		}
 
 		// এখানে চাইলে API call করতে পারো
 
