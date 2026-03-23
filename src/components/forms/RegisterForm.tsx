@@ -5,6 +5,15 @@ import { Building2, Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import SocialLogin from "../shared/SocialLogin/SocialLogin";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectLabel,
+	SelectTrigger,
+	SelectValue,
+} from "../ui/select";
 
 type LoginFormData = {
 	fullname: string;
@@ -85,6 +94,39 @@ const RegisterForm = () => {
 									Email is required!
 								</p>
 							)}
+						</div>
+						<div>
+							<label className="text-sm font-medium text-foreground mb-1.5 block">
+								Select Role
+							</label>
+							<Select>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Select a role" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectGroup>
+										<SelectLabel>Roles</SelectLabel>
+										<SelectItem
+											value="admin"
+											className="data-highlighted:bg-primary data-highlighted:text-foreground!"
+										>
+											Admin
+										</SelectItem>
+										<SelectItem
+											value="manager"
+											className="data-highlighted:bg-primary data-highlighted:text-foreground!"
+										>
+											Manager
+										</SelectItem>
+										<SelectItem
+											value="user"
+											className="data-highlighted:bg-primary data-highlighted:text-foreground!"
+										>
+											User
+										</SelectItem>
+									</SelectGroup>
+								</SelectContent>
+							</Select>
 						</div>
 						<div>
 							<label className="text-sm font-medium text-foreground mb-1.5 block">

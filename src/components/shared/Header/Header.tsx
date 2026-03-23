@@ -1,12 +1,34 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Building2, Menu, Moon, Sun, X } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+	Building2,
+	ChevronDown,
+	LogOut,
+	Menu,
+	Moon,
+	Settings,
+	Sun,
+	User,
+	X,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Header = () => {
 	const [mounted, setMounted] = useState(false);
+	const isAuthenticated = false;
+	const user = {
+		name: "Rakeeb Hasan",
+		role: "admin",
+	};
 
 	const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
 		if (typeof window !== "undefined") {
@@ -87,17 +109,74 @@ const Header = () => {
 								<Moon className="h-4 w-4" />
 							)}
 						</button>
-
-						<div className="flex items-center gap-2">
-							<Link href="/login">
-								<Button className="bg-transparent transition-colors duration-300 text-[#1B222B] dark:text-white hover:text-white hover:bg-[#F59F0A]">
-									Sign In
-								</Button>
-							</Link>
-							<Link href="/register">
-								<Button>Get Started</Button>
-							</Link>
-						</div>
+						{isAuthenticated ? (
+							<>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted hover:bg-muted/80 transition-colors">
+											<div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center">
+												<span className="text-xs font-bold text-primary-foreground">
+													{user?.name.charAt(0)}
+												</span>
+											</div>
+											<span className="text-sm font-medium text-foreground">
+												{user?.name}
+											</span>
+											<ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+										</button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent
+										align="end"
+										className="w-48"
+									>
+										<DropdownMenuItem asChild>
+											<Link
+												href={
+													user?.role === "admin"
+														? "/admin"
+														: "/dashboard"
+												}
+												className="flex items-center gap-2"
+											>
+												<User className="h-4 w-4" />{" "}
+												Profile
+											</Link>
+										</DropdownMenuItem>
+										<DropdownMenuItem asChild>
+											<Link
+												href={
+													user?.role === "admin"
+														? "/admin/settings"
+														: "/dashboard/profile"
+												}
+												className="flex items-center gap-2"
+											>
+												<Settings className="h-4 w-4" />{" "}
+												Settings
+											</Link>
+										</DropdownMenuItem>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem className="flex items-center gap-2 text-destructive">
+											<LogOut className="h-4 w-4" />{" "}
+											Logout
+										</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
+							</>
+						) : (
+							<>
+								<div className="flex items-center gap-2">
+									<Link href="/login">
+										<Button className="bg-transparent transition-colors duration-300 text-[#1B222B] dark:text-white hover:text-white hover:bg-[#F59F0A]">
+											Sign In
+										</Button>
+									</Link>
+									<Link href="/register">
+										<Button>Get Started</Button>
+									</Link>
+								</div>
+							</>
+						)}
 					</div>
 
 					{/* Mobile Menu Button */}
@@ -147,31 +226,45 @@ const Header = () => {
 									<Moon className="h-4 w-4" />
 								)}
 							</button>
-							<>
-								<Link
-									href="/login"
-									onClick={() => setMobileOpen(false)}
-									className="flex-1"
-								>
-									<Button
-										variant="ghost"
-										size="sm"
-										className="w-full"
+							{!isAuthenticated && (
+								<>
+									<Link
+										href="/login"
+										onClick={() => setMobileOpen(false)}
+										className="flex-1"
 									>
-										Sign In
-									</Button>
-								</Link>
+										<Button
+											variant="ghost"
+											size="sm"
+											className="w-full"
+										>
+											Sign In
+										</Button>
+									</Link>
 
-								<Link
-									href="/register"
-									onClick={() => setMobileOpen(false)}
-									className="flex-1"
+									<Link
+										href="/register"
+										onClick={() => setMobileOpen(false)}
+										className="flex-1"
+									>
+										<Button size="sm" className="w-full">
+											Get Started
+										</Button>
+									</Link>
+								</>
+							)}
+							{isAuthenticated && (
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={() => {
+										setMobileOpen(false);
+									}}
+									className="text-destructive"
 								>
-									<Button size="sm" className="w-full">
-										Get Started
-									</Button>
-								</Link>
-							</>
+									<LogOut className="h-4 w-4 mr-2" /> Logout
+								</Button>
+							)}
 						</div>
 					</div>
 				</div>

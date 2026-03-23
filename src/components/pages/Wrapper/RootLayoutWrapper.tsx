@@ -11,7 +11,7 @@ const RootLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 	const hideLayout = ["/login", "/register"].includes(pathname);
 
 	return (
-		<>
+		<div className="flex flex-col">
 			{!hideLayout && (
 				<header className="sticky top-0 z-50 w-full">
 					<Header />
@@ -25,7 +25,7 @@ const RootLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 					<Footer />
 				</footer>
 			)}
-		</>
+		</div>
 	);
 };
 

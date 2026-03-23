@@ -373,3 +373,51 @@ export const blogPosts = [
 		category: "Technology",
 	},
 ];
+
+export interface Review {
+	id: string;
+	propertyId: string;
+	userName: string;
+	rating: number;
+	comment: string;
+	date: string;
+}
+
+export const reviews: Review[] = [
+	{
+		id: "r1",
+		propertyId: "1",
+		userName: "Michael Torres",
+		rating: 5,
+		comment:
+			"Absolutely breathtaking property. The ocean views are even better in person.",
+		date: "2024-02-10",
+	},
+	{
+		id: "r2",
+		propertyId: "1",
+		userName: "Emma Watson",
+		rating: 5,
+		comment:
+			"The architectural design is world-class. Every detail has been considered.",
+		date: "2024-01-25",
+	},
+	{
+		id: "r3",
+		propertyId: "2",
+		userName: "David Kim",
+		rating: 4,
+		comment:
+			"Stunning penthouse with incredible city views. The exposed concrete adds real character.",
+		date: "2024-03-05",
+	},
+	{
+		id: "r4",
+		propertyId: "3",
+		userName: "Rachel Green",
+		rating: 5,
+		comment:
+			"Mid-century perfection. The terrazzo floors are original and immaculate.",
+		date: "2024-03-18",
+	},
+];
