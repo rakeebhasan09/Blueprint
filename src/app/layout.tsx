@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/shared/Header/Header";
 import Footer from "@/components/shared/Footer/Footer";
 import { Toaster } from "react-hot-toast";
+import RootLayoutWrapper from "@/components/pages/Wrapper/RootLayoutWrapper";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -30,18 +31,7 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				<div className="flex flex-col min-h-screen">
-					<header className="sticky top-0 z-50 w-full">
-						<Header />
-					</header>
-					<main className="grow">
-						{children}
-						<Toaster position="top-center" reverseOrder={false} />
-					</main>
-					<footer>
-						<Footer />
-					</footer>
-				</div>
+				<RootLayoutWrapper>{children}</RootLayoutWrapper>
 			</body>
 		</html>
 	);

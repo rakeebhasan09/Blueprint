@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+import { Button } from "../ui/button";
 import Link from "next/link";
 import { Building2, Eye, EyeOff } from "lucide-react";
-import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 import SocialLogin from "../shared/SocialLogin/SocialLogin";
 
 type LoginFormData = {
+	fullname: string;
 	email: string;
 	password: string;
 };
-const LoginForm = () => {
+
+const RegisterForm = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const {
@@ -41,10 +43,10 @@ const LoginForm = () => {
 						</span>
 					</Link>
 					<h1 className="font-display text-2xl font-bold text-foreground">
-						Welcome Back
+						Create Account
 					</h1>
 					<p className="text-sm text-muted-foreground mt-1">
-						Sign in to your account
+						Start your real estate journey
 					</p>
 				</div>
 				<div className="p-8 rounded-2xl bg-card shadow-card border border-border/50">
@@ -52,6 +54,22 @@ const LoginForm = () => {
 						onSubmit={handleSubmit(handleLoginForm)}
 						className="space-y-4"
 					>
+						<div>
+							<label className="text-sm font-medium text-foreground mb-1.5 block">
+								Full Name
+							</label>
+							<input
+								type="text"
+								className="w-full h-11 px-4 rounded-xl border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
+								placeholder="John Doe"
+								{...register("fullname", { required: true })}
+							/>
+							{errors.fullname?.type === "required" && (
+								<p className="text-xs text-destructive mt-1">
+									Email is required!
+								</p>
+							)}
+						</div>
 						<div>
 							<label className="text-sm font-medium text-foreground mb-1.5 block">
 								Email
@@ -109,10 +127,10 @@ const LoginForm = () => {
 							{loading ? (
 								<span className="flex items-center gap-2">
 									<span className="h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />{" "}
-									Signing in...
+									Creating...
 								</span>
 							) : (
-								"Sign In"
+								"Create Account"
 							)}
 						</Button>
 					</form>
@@ -129,28 +147,14 @@ const LoginForm = () => {
 							</div>
 						</div>
 						<SocialLogin />
-						<div className="grid grid-cols-2 gap-3">
-							<Button
-								variant="outline"
-								className="rounded-xl h-11 text-sm border-secondary text-secondary hover:bg-secondary/10"
-							>
-								User Demo
-							</Button>
-							<Button
-								variant="outline"
-								className="rounded-xl h-11 text-sm border-accent text-accent hover:bg-accent/10"
-							>
-								Admin Demo
-							</Button>
-						</div>
 					</div>
 					<p className="text-center text-sm text-muted-foreground mt-6">
-						Don&apos;t have an account?{" "}
+						Already have an account?{" "}
 						<Link
-							href="/register"
+							href="/login"
 							className="text-primary font-medium hover:underline"
 						>
-							Sign Up
+							Sign In
 						</Link>
 					</p>
 				</div>
@@ -159,4 +163,4 @@ const LoginForm = () => {
 	);
 };
 
-export default LoginForm;
+export default RegisterForm;
