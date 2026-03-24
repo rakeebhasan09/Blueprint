@@ -8,7 +8,10 @@ const RootLayoutWrapper = ({ children }: { children: React.ReactNode }) => {
 	const pathname = usePathname();
 
 	// যেসব route এ header/footer hide হবে
-	const hideLayout = ["/login", "/register"].includes(pathname);
+	const hideLayout =
+		pathname === "/login" ||
+		pathname === "/register" ||
+		pathname.startsWith("/dashboard");
 
 	return (
 		<div className="flex flex-col">
