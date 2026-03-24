@@ -421,3 +421,61 @@ export const reviews: Review[] = [
 		date: "2024-03-18",
 	},
 ];
+
+export interface User {
+	id: string;
+	name: string;
+	email: string;
+	role: "user" | "manager" | "admin";
+	avatar: string;
+	joined: string;
+	bookings: number;
+}
+
+export const mockUsers: User[] = [
+	{
+		id: "u1",
+		name: "John Doe",
+		email: "john@example.com",
+		role: "user",
+		avatar: "",
+		joined: "2024-01-10",
+		bookings: 3,
+	},
+	{
+		id: "u2",
+		name: "Jane Smith",
+		email: "jane@example.com",
+		role: "manager",
+		avatar: "",
+		joined: "2024-02-15",
+		bookings: 1,
+	},
+	{
+		id: "u3",
+		name: "Admin User",
+		email: "admin@blueprint.com",
+		role: "admin",
+		avatar: "",
+		joined: "2023-12-01",
+		bookings: 0,
+	},
+	{
+		id: "u4",
+		name: "Alice Johnson",
+		email: "alice@example.com",
+		role: "user",
+		avatar: "",
+		joined: "2024-03-01",
+		bookings: 5,
+	},
+	{
+		id: "u5",
+		name: "Bob Wilson",
+		email: "bob@example.com",
+		role: "user",
+		avatar: "",
+		joined: "2024-01-20",
+		bookings: 2,
+	},
+];

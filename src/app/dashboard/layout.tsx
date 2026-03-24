@@ -24,31 +24,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-const userLinks = [
-	{ label: "Overview", path: "/dashboard", icon: LayoutDashboard },
-	{ label: "My Bookings", path: "/dashboard/bookings", icon: CalendarCheck },
-	{ label: "My Reviews", path: "/dashboard/reviews", icon: Star },
-	{ label: "My Profile", path: "/dashboard/profile", icon: User },
-];
-
-const adminLinks = [
-	{ label: "Overview", path: "/admin", icon: LayoutDashboard },
-	{ label: "Manage Listings", path: "/admin/listings", icon: Building },
-	{ label: "Manage Users", path: "/admin/users", icon: Users },
-	{ label: "Manage Orders", path: "/admin/orders", icon: CalendarCheck },
-	{ label: "Analytics", path: "/admin/analytics", icon: BarChart3 },
-	{ label: "Settings", path: "/admin/settings", icon: Settings },
-];
-
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 	const user = {
 		name: "Rakeeb Hasan",
-		role: "user",
+		role: "admin",
 	};
 	const pathname = usePathname();
 	const [collapsed, setCollapsed] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const links = user?.role === "admin" ? adminLinks : userLinks;
+
 	return (
 		<div className="flex min-h-screen">
 			{/* Sidebar */}
@@ -73,20 +57,128 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 					</button>
 				</div>
 				<nav className="flex-1 p-3 space-y-1">
-					{links.map((link) => (
-						<Link
-							key={link.path}
-							href={link.path}
-							className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
-								pathname === link.path
-									? "bg-primary/10 text-primary shadow-sm"
-									: "text-muted-foreground hover:text-foreground hover:bg-muted"
-							}`}
-						>
-							<link.icon className="h-4 w-4 shrink-0" />
-							{!collapsed && <span>{link.label}</span>}
-						</Link>
-					))}
+					{/* Normal User Route */}
+					{user.role === "user" && (
+						<>
+							<Link
+								href={"/dashboard"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<LayoutDashboard className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>Overview</span>}
+							</Link>
+							<Link
+								href={"/dashboard/bookings"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/bookings"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<CalendarCheck className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>My Bookings</span>}
+							</Link>
+							<Link
+								href={"/dashboard/reviews"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/reviews"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<Star className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>My Reviews</span>}
+							</Link>
+						</>
+					)}
+					{/* Admin User Route */}
+					{user.role === "admin" && (
+						<>
+							<Link
+								href={"/dashboard/admin"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/admin"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<LayoutDashboard className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>Overview</span>}
+							</Link>
+							<Link
+								href={"/dashboard/admin/listings"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/admin/listings"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<Building className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>Manage Listings</span>}
+							</Link>
+							<Link
+								href={"/dashboard/admin/users"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/admin/users"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<Users className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>Manage Users</span>}
+							</Link>
+							<Link
+								href={"/dashboard/admin/orders"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/admin/orders"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<CalendarCheck className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>Manage Orders</span>}
+							</Link>
+							<Link
+								href={"/dashboard/admin/analytics"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/admin/analytics"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<BarChart3 className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>Manage Analytics</span>}
+							</Link>
+							<Link
+								href={"/dashboard/admin/settings"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/admin/settings"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<Settings className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>Settings</span>}
+							</Link>
+						</>
+					)}
+
+					{/* All User Route */}
+					<Link
+						href={"/dashboard/profile"}
+						className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+							pathname === "/dashboard/profile"
+								? "bg-primary/10 text-primary shadow-sm"
+								: "text-muted-foreground hover:text-foreground hover:bg-muted"
+						}`}
+					>
+						<User className="h-4 w-4 shrink-0" />
+						{!collapsed && <span>My Profile</span>}
+					</Link>
 				</nav>
 				<div className="p-3 border-t border-border">
 					<Link
@@ -119,21 +211,138 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 							</button>
 						</div>
 						<nav className="flex-1 p-3 space-y-1">
-							{links.map((link) => (
-								<Link
-									key={link.path}
-									href={link.path}
-									onClick={() => setMobileOpen(false)}
-									className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-										location.pathname === link.path
-											? "bg-primary/10 text-primary"
-											: "text-muted-foreground hover:bg-muted"
-									}`}
-								>
-									<link.icon className="h-4 w-4" />
-									<span>{link.label}</span>
-								</Link>
-							))}
+							{user.role === "user" && (
+								<>
+									<Link
+										href={"/dashboard"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname === "/dashboard"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<LayoutDashboard className="h-4 w-4 shrink-0" />
+										{!collapsed && <span>Overview</span>}
+									</Link>
+									<Link
+										href={"/dashboard/bookings"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname === "/dashboard/bookings"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<CalendarCheck className="h-4 w-4 shrink-0" />
+										{!collapsed && <span>My Bookings</span>}
+									</Link>
+									<Link
+										href={"/dashboard/reviews"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname === "/dashboard/reviews"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<Star className="h-4 w-4 shrink-0" />
+										{!collapsed && <span>My Reviews</span>}
+									</Link>
+								</>
+							)}
+							{/* Admin User Route */}
+							{user.role === "admin" && (
+								<>
+									<Link
+										href={"/dashboard/admin"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname === "/dashboard/admin"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<LayoutDashboard className="h-4 w-4 shrink-0" />
+										{!collapsed && <span>Overview</span>}
+									</Link>
+									<Link
+										href={"/dashboard/admin/listings"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname ===
+											"/dashboard/admin/listings"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<Building className="h-4 w-4 shrink-0" />
+										{!collapsed && (
+											<span>Manage Listings</span>
+										)}
+									</Link>
+									<Link
+										href={"/dashboard/admin/users"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname ===
+											"/dashboard/admin/users"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<Users className="h-4 w-4 shrink-0" />
+										{!collapsed && (
+											<span>Manage Users</span>
+										)}
+									</Link>
+									<Link
+										href={"/dashboard/admin/orders"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname ===
+											"/dashboard/admin/orders"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<CalendarCheck className="h-4 w-4 shrink-0" />
+										{!collapsed && (
+											<span>Manage Orders</span>
+										)}
+									</Link>
+									<Link
+										href={"/dashboard/admin/analytics"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname ===
+											"/dashboard/admin/analytics"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<BarChart3 className="h-4 w-4 shrink-0" />
+										{!collapsed && (
+											<span>Manage Analytics</span>
+										)}
+									</Link>
+									<Link
+										href={"/dashboard/admin/settings"}
+										className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+											pathname ===
+											"/dashboard/admin/settings"
+												? "bg-primary/10 text-primary shadow-sm"
+												: "text-muted-foreground hover:text-foreground hover:bg-muted"
+										}`}
+									>
+										<Settings className="h-4 w-4 shrink-0" />
+										{!collapsed && <span>Settings</span>}
+									</Link>
+								</>
+							)}
+							<Link
+								href={"/dashboard/profile"}
+								className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+									pathname === "/dashboard/profile"
+										? "bg-primary/10 text-primary shadow-sm"
+										: "text-muted-foreground hover:text-foreground hover:bg-muted"
+								}`}
+							>
+								<User className="h-4 w-4 shrink-0" />
+								{!collapsed && <span>My Profile</span>}
+							</Link>
 						</nav>
 						<div className="p-3 border-t border-border">
 							<Link
@@ -148,7 +357,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 			)}
 
 			{/* Main Content */}
-			<main className="flex-1 bg-gray-100">
+			<main className="flex-1">
 				{/* Main Content */}
 				<div className="flex-1 flex flex-col min-w-0">
 					<header className="h-15 border-b border-border bg-card flex items-center justify-between px-4 lg:px-6">
@@ -160,8 +369,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 								<Menu className="h-5 w-5" />
 							</button>
 							<h1 className="font-display font-semibold text-foreground text-lg">
-								{links.find((l) => l.path === pathname)
-									?.label || "Dashboard"}
+								Blueprint
 							</h1>
 						</div>
 						<DropdownMenu>

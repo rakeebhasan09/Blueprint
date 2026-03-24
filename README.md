@@ -1,6 +1,13 @@
 ## Blueprint - A professional real estate company
 
+Landing Page Ui
 <img src="public/BluePrint-Home.png" />
+
+User Dashboard
+<img src="public/User-Dashboard.png" />
+
+Admin Dashboard
+<img src="public/Admin-Dashboard.png" />
 
 This project is a modern, fully responsive web application focused on clean UI and consistent user experience. It includes an interactive landing page, advanced item listing with search, filtering, and sorting, and detailed item pages. The application features a complete authentication system with validation and social login options. A role-based dashboard is also implemented with analytics, charts, and data management. Overall, it ensures a scalable and professional design with light and dark mode support.
 
