@@ -1,5 +1,5 @@
 export interface Property {
-	id: string;
+	_id: string;
 	title: string;
 	description: string;
 	price: number;
@@ -22,7 +22,7 @@ export interface Property {
 
 export const properties: Property[] = [
 	{
-		id: "1",
+		_id: "1",
 		title: "Modern Glass Villa",
 		description:
 			"A stunning contemporary glass villa with panoramic ocean views, featuring open-plan living spaces, a private infinity pool, and sustainable architecture that harmonizes with the coastal landscape. Floor-to-ceiling windows flood every room with natural light, creating a seamless indoor-outdoor living experience.",
@@ -54,7 +54,7 @@ export const properties: Property[] = [
 		date: "2024-01-15",
 	},
 	{
-		id: "2",
+		_id: "2",
 		title: "Brutalist Penthouse Loft",
 		description:
 			"An architectural masterpiece in the heart of downtown Manhattan, this brutalist-inspired penthouse features exposed concrete walls, 20-foot ceilings, and a private rooftop terrace with skyline views. Industrial elegance meets luxury living.",
@@ -85,7 +85,7 @@ export const properties: Property[] = [
 		date: "2024-02-20",
 	},
 	{
-		id: "3",
+		_id: "3",
 		title: "Mid-Century Ranch Estate",
 		description:
 			"A beautifully restored mid-century modern ranch home set on two acres of manicured gardens. Original terrazzo floors, floor-to-ceiling glass walls, and a resort-style pool make this a true architectural gem.",
@@ -116,7 +116,7 @@ export const properties: Property[] = [
 		date: "2024-03-10",
 	},
 	{
-		id: "4",
+		_id: "4",
 		title: "Victorian Brownstone",
 		description:
 			"A meticulously renovated four-story Victorian brownstone in historic Beacon Hill. Original crown moldings, marble fireplaces, and a private garden courtyard blend with modern amenities for timeless living.",
@@ -147,7 +147,7 @@ export const properties: Property[] = [
 		date: "2024-01-28",
 	},
 	{
-		id: "5",
+		_id: "5",
 		title: "Waterfront Modern Condo",
 		description:
 			"Sleek waterfront condo with floor-to-ceiling windows overlooking the marina. Open concept kitchen with Italian cabinetry and Calacatta marble countertops. Resort-style amenities including pool, spa, and private dock access.",
@@ -178,7 +178,7 @@ export const properties: Property[] = [
 		date: "2024-04-05",
 	},
 	{
-		id: "6",
+		_id: "6",
 		title: "Mountain Retreat Cabin",
 		description:
 			"A luxury mountain cabin crafted from reclaimed timber and stone. Vaulted ceilings with exposed beams, a grand stone fireplace, and wraparound deck with mountain views. Perfect blend of rustic charm and modern comfort.",
@@ -209,7 +209,7 @@ export const properties: Property[] = [
 		date: "2024-02-14",
 	},
 	{
-		id: "7",
+		_id: "7",
 		title: "Art Deco Apartment",
 		description:
 			"Exquisite Art Deco apartment in a landmark building featuring original geometric tile work, curved walls, and a sunken living room. Recently updated with a chef's kitchen and spa bathroom while preserving its 1930s glamour.",
@@ -240,7 +240,7 @@ export const properties: Property[] = [
 		date: "2024-03-22",
 	},
 	{
-		id: "8",
+		_id: "8",
 		title: "Sustainable Smart Home",
 		description:
 			"Net-zero energy smart home built with sustainable materials and cutting-edge technology. Solar roof, geothermal heating, rainwater harvesting, and a Tesla Powerwall. Every system controlled via integrated home automation.",
@@ -479,3 +479,21 @@ export const mockUsers: User[] = [
 		bookings: 2,
 	},
 ];
+
+export interface TAddProperty {
+	title: string;
+	description: string;
+	type: string;
+	status: string;
+	location: string;
+	city: string;
+	price: number;
+	yearBuilt: number;
+	agent: string;
+	bedrooms: number;
+	bathrooms: number;
+	features: string[];
+	sqft: number;
+	image: string;
+	images: string[];
+}

@@ -1,8 +1,9 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import { Property } from "@/data/properties";
 import useAxios from "@/hooks/useAxios";
 import { useQuery } from "@tanstack/react-query";
-import { Eye, Pencil, Search, Trash } from "lucide-react";
+import { Eye, Pencil, Plus, Search, Trash } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -57,15 +58,23 @@ const ListingsPage = () => {
 	return (
 		<div className="space-y-6">
 			<p>Properties from DB {properties.length}</p>
-			<div className="relative max-w-sm">
-				<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-				<input
-					type="text"
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-					placeholder="Search listings..."
-					className="w-full h-10 pl-10 pr-4 rounded-xl border border-border bg-card text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
-				/>
+			<div className="flex items-center justify-between gap-4 flex-wrap">
+				<div className="relative max-w-sm">
+					<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+					<input
+						type="text"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						placeholder="Search listings..."
+						className="w-full h-10 pl-10 pr-4 rounded-xl border border-border bg-card text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
+					/>
+				</div>
+				<Button asChild className="py-5 px-5">
+					<Link href="/dashboard/admin/listings/add">
+						<Plus className="h-4 w-4 mr-2" />
+						Add Property
+					</Link>
+				</Button>
 			</div>
 			<div className="rounded-2xl bg-card shadow-card border border-border/50 overflow-hidden overflow-x-auto">
 				<table className="w-full">
