@@ -1,16 +1,62 @@
 "use client";
-import { properties } from "@/data/properties";
+import { Property } from "@/data/properties";
+import useAxios from "@/hooks/useAxios";
+import { useQuery } from "@tanstack/react-query";
 import { Eye, Pencil, Search, Trash } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 const ListingsPage = () => {
 	const [search, setSearch] = useState("");
-	const filtered = properties.filter((p) =>
-		p.title.toLowerCase().includes(search.toLowerCase()),
+
+	const useaxios = useAxios();
+
+	const { data: properties = [], refetch } = useQuery<Property[]>({
+		queryKey: ["listings"],
+		queryFn: async () => {
+			const res = await useaxios.get("/properties");
+			return res.data.properties;
+		},
+	});
+
+	const filtered = properties.filter((property) =>
+		property.title.toLowerCase().includes(search.toLowerCase()),
 	);
+
+	const handleDelete = (id: string) => {
+		Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!",
+		})
+			.then((result) => {
+				if (result.isConfirmed) {
+					useaxios.delete(`/properties/${id}`).then((res) => {
+						if (res.data.success) {
+							Swal.fire({
+								title: `${res.data.message}`,
+								text: "Your file has been deleted.",
+								icon: "success",
+							});
+							refetch();
+						}
+					});
+				}
+			})
+			.catch(() => {
+				Swal.fire("Error!", "Failed to delete property.", "error");
+			});
+	};
+
 	return (
 		<div className="space-y-6">
+			<p>Properties from DB {properties.length}</p>
 			<div className="relative max-w-sm">
 				<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 				<input
@@ -46,54 +92,83 @@ const ListingsPage = () => {
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-border">
-						{filtered.map((p) => (
-							<tr
-								key={p.id}
-								className="hover:bg-muted/20 transition-colors"
-							>
-								<td className="p-4">
-									<div className="flex items-center gap-3">
-										<Image
-											width={250}
-											height={125}
-											src={p.image}
-											alt=""
-											className="h-10 w-14 rounded-lg object-cover"
-										/>
-										<span className="text-sm font-medium text-foreground text-nowrap">
-											{p.title}
-										</span>
-									</div>
-								</td>
-								<td className="p-4 text-sm text-muted-foreground text-nowrap">
-									{p.type}
-								</td>
-								<td className="p-4 text-sm font-medium text-foreground tabular-nums text-nowrap">
-									${p.price.toLocaleString()}
-								</td>
-								<td className="p-4 text-nowrap">
-									<span
-										className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${p.status === "For Sale" ? "bg-secondary/10 text-secondary" : p.status === "For Rent" ? "bg-primary/10 text-primary" : "bg-muted text-muted-foreground text-nowrap"}`}
-									>
-										{p.status}
-									</span>
-								</td>
-								<td className="p-4 text-sm text-muted-foreground text-nowrap">
-									{p.agent}
-								</td>
-								<td className="text-center text-nowrap">
-									<button className="px-3 py-2 mr-2 rounded-lg bg-secondary text-white">
-										<Eye size={16} />
-									</button>
-									<button className="px-3 py-2 mr-2 rounded-lg bg-accent text-white">
-										<Pencil size={16} />
-									</button>
-									<button className="px-3 py-2 rounded-lg bg-destructive text-white">
-										<Trash size={16} />
-									</button>
+						{filtered.length === 0 ? (
+							<tr>
+								<td
+									colSpan={6}
+									className="text-center py-6 text-muted-foreground"
+								>
+									No data found
 								</td>
 							</tr>
-						))}
+						) : (
+							filtered.map((p) => (
+								<tr
+									key={p._id}
+									className="hover:bg-muted/20 transition-colors"
+								>
+									<td className="p-4">
+										<div className="flex items-center gap-3">
+											<Image
+												width={250}
+												height={125}
+												src={p.image}
+												alt=""
+												className="h-10 w-14 rounded-lg object-cover"
+											/>
+											<span className="text-sm font-medium text-foreground text-nowrap">
+												{p.title}
+											</span>
+										</div>
+									</td>
+
+									<td className="p-4 text-sm text-muted-foreground text-nowrap">
+										{p.type}
+									</td>
+
+									<td className="p-4 text-sm font-medium text-foreground tabular-nums text-nowrap">
+										${p.price.toLocaleString()}
+									</td>
+
+									<td className="p-4 text-nowrap">
+										<span
+											className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+												p.status === "For Sale"
+													? "bg-secondary/10 text-secondary"
+													: p.status === "For Rent"
+														? "bg-primary/10 text-primary"
+														: "bg-muted text-muted-foreground"
+											}`}
+										>
+											{p.status}
+										</span>
+									</td>
+
+									<td className="p-4 text-sm text-muted-foreground text-nowrap">
+										{p.agent}
+									</td>
+
+									<td className="text-center text-nowrap">
+										<Link href={`/property/${p._id}`}>
+											<button className="px-3 py-2 mr-2 rounded-lg bg-secondary text-white">
+												<Eye size={16} />
+											</button>
+										</Link>
+
+										<button className="px-3 py-2 mr-2 rounded-lg bg-accent text-white">
+											<Pencil size={16} />
+										</button>
+
+										<button
+											onClick={() => handleDelete(p._id)}
+											className="px-3 py-2 rounded-lg bg-destructive text-white"
+										>
+											<Trash size={16} />
+										</button>
+									</td>
+								</tr>
+							))
+						)}
 					</tbody>
 				</table>
 			</div>
