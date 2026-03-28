@@ -10,6 +10,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { TAddProperty } from "@/data/properties";
+import useAxios from "@/hooks/useAxios";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -42,6 +44,7 @@ const AddListings = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [type, setType] = useState<string>("");
 	const [status, setStatus] = useState("");
+
 	const toggleFeature = (feature: string) => {
 		setSelectedFeatures((prev) =>
 			prev.includes(feature)
@@ -56,12 +59,35 @@ const AddListings = () => {
 		formState: { errors },
 	} = useForm<TAddProperty>();
 
-	const handleAddProperty = (data: TAddProperty) => {
-		data.type = type;
-		data.status = status;
-		data.features = selectedFeatures;
-		setIsSubmitting(true);
-		console.log(data);
+	const useaxios = useAxios();
+
+	const handleAddProperty = async (data: TAddProperty) => {
+		console.log("From submitted.");
+		// Need to fix send data on the server
+		try {
+			const formattedData = {
+				...data,
+				images: data.images
+					.split(",")
+					.map((img) => img.trim())
+					.filter(Boolean),
+				type,
+				status,
+				features: selectedFeatures,
+			};
+
+			console.log("Sending 👉", formattedData);
+
+			const res = await axios.post(
+				"http://localhost:5000/api/v1/properties",
+				formattedData,
+			);
+
+			console.log("SUCCESS 👉", res.data);
+		} catch (error: any) {
+			console.log("ERROR 👉", error);
+			console.log("ERROR RESPONSE 👉", error?.response);
+		}
 	};
 	return (
 		<div className="max-w-4xl mx-auto space-y-8">
@@ -150,7 +176,7 @@ const AddListings = () => {
 											For Sale
 										</SelectItem>
 										<SelectItem
-											value="apartment"
+											value="For Rent"
 											className="data-highlighted:bg-primary"
 										>
 											For Rent
@@ -286,6 +312,64 @@ const AddListings = () => {
 								{...register("sqft", { required: true })}
 							/>
 							{errors.sqft?.type === "required" && (
+								<p className="text-red-400 text-xs">
+									Square Footage is required
+								</p>
+							)}
+						</div>
+					</div>
+					<div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+						<div className="space-y-2">
+							<label className="block">Rating *</label>
+							<input
+								type="number"
+								step="0.1"
+								min={0}
+								max={5}
+								placeholder="Type rating out of 5"
+								className="w-full h-12 px-4 rounded-xl border border-border bg-muted/40 text-sm text-foreground placeholder:text-muted-foreground outline-none transition"
+								{...register("rating", {
+									required: true,
+									min: 0,
+									max: 5,
+									valueAsNumber: true,
+								})}
+							/>
+							{errors.rating?.type === "required" && (
+								<p className="text-red-400 text-xs">
+									Rating Footage is required
+								</p>
+							)}
+						</div>
+						<div className="space-y-2">
+							<label className="block">
+								Total Review&apos;s *
+							</label>
+							<input
+								type="number"
+								placeholder="Number's of review's"
+								className="w-full h-12 px-4 rounded-xl border border-border bg-muted/40 text-sm text-foreground placeholder:text-muted-foreground outline-none transition"
+								{...register("reviews", { required: true })}
+							/>
+							{errors.reviews?.type === "required" && (
+								<p className="text-red-400 text-xs">
+									Review&apos;s Footage is required
+								</p>
+							)}
+						</div>
+						<div className="space-y-2">
+							<label className="block">Featured *</label>
+							<input type="checkbox" {...register("featured")} />
+							{errors.featured?.type === "required" && (
+								<p className="text-red-400 text-xs">
+									Square Footage is required
+								</p>
+							)}
+						</div>
+						<div className="space-y-2">
+							<label className="block">Popular *</label>
+							<input type="checkbox" {...register("popular")} />
+							{errors.popular?.type === "required" && (
 								<p className="text-red-400 text-xs">
 									Square Footage is required
 								</p>

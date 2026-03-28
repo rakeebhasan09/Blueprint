@@ -493,6 +493,10 @@ export interface TAddProperty {
 	bedrooms: number;
 	bathrooms: number;
 	features: string[];
+	rating: number;
+	reviews: number;
+	featured: boolean;
+	popular: boolean;
 	sqft: number;
 	image: string;
 	images: string[];
