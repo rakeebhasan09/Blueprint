@@ -39,7 +39,7 @@ const FeaturedProperties = () => {
 								.slice(0, 4)
 								.map((p, i) => (
 									<PropertyCard
-										key={p.id}
+										key={p._id}
 										property={p}
 										index={i}
 									/>

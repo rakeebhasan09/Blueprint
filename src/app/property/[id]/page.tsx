@@ -22,12 +22,12 @@ import React, { useState } from "react";
 const PropertyDetails = () => {
 	const params = useParams();
 	const id = params.id;
-	const property = properties.find((p) => p.id === id);
+	const property = properties.find((p) => p._id === id);
 	const [activeImage, setActiveImage] = useState(0);
 	const [showTourModal, setShowTourModal] = useState(false);
 	const propertyReviews = reviews.filter((r) => r.propertyId === id);
 	const related = properties
-		.filter((p) => p.id !== id && p.type === property?.type)
+		.filter((p) => p._id !== id && p.type === property?.type)
 		.slice(0, 4);
 
 	if (!property) {
@@ -294,7 +294,7 @@ const PropertyDetails = () => {
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 							{related.map((p, i) => (
 								<PropertyCard
-									key={p.id}
+									key={p._id}
 									property={p}
 									index={i}
 								/>

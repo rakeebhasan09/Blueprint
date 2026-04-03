@@ -11,7 +11,7 @@ const PopularProperties = () => {
 				</h2>
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 					{properties.slice(4, 8).map((p, i) => (
-						<PropertyCard key={p.id} property={p} index={i} />
+						<PropertyCard key={p._id} property={p} index={i} />
 					))}
 				</div>
 			</div>

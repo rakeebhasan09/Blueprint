@@ -499,5 +499,5 @@ export interface TAddProperty {
 	popular: boolean;
 	sqft: number;
 	image: string;
-	images: string[];
+	images: string;
 }

@@ -85,7 +85,7 @@ const PropertyCard = ({ property, index = 0 }: PropertyCardProps) => {
 						${property.price.toLocaleString()}
 					</span>
 					<Link
-						href={`/property/${property.id}`}
+						href={`/property/${property._id}`}
 						className="px-4 py-2 bg-primary text-primary-foreground text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
 					>
 						View Details

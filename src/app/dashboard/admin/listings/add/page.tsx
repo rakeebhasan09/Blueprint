@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/select";
 import { TAddProperty } from "@/data/properties";
 import useAxios from "@/hooks/useAxios";
-import axios from "axios";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import Swal from "sweetalert2";
 
 const featureOptions = [
 	"Swimming Pool",
@@ -44,6 +45,7 @@ const AddListings = () => {
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [type, setType] = useState<string>("");
 	const [status, setStatus] = useState("");
+	const router = useRouter();
 
 	const toggleFeature = (feature: string) => {
 		setSelectedFeatures((prev) =>
@@ -57,14 +59,14 @@ const AddListings = () => {
 		register,
 		handleSubmit,
 		formState: { errors },
+		reset,
 	} = useForm<TAddProperty>();
 
 	const useaxios = useAxios();
 
 	const handleAddProperty = async (data: TAddProperty) => {
-		console.log("From submitted.");
-		// Need to fix send data on the server
 		try {
+			setIsSubmitting(true);
 			const formattedData = {
 				...data,
 				images: data.images
@@ -78,15 +80,27 @@ const AddListings = () => {
 
 			console.log("Sending 👉", formattedData);
 
-			const res = await axios.post(
-				"http://localhost:5000/api/v1/properties",
-				formattedData,
-			);
+			const res = await useaxios.post("/properties", formattedData);
 
-			console.log("SUCCESS 👉", res.data);
-		} catch (error: any) {
-			console.log("ERROR 👉", error);
-			console.log("ERROR RESPONSE 👉", error?.response);
+			if (res.data.success === true) {
+				Swal.fire({
+					title: `${res.data.message}`,
+					icon: "success",
+				});
+				reset();
+				router.push("/dashboard/admin/listings");
+				setIsSubmitting(false);
+			} else {
+				Swal.fire({
+					icon: "error",
+					title: "Oops...",
+					text: `${res.data.message}`,
+				});
+				setIsSubmitting(false);
+			}
+		} catch (err) {
+			console.log(err);
+			setIsSubmitting(false);
 		}
 	};
 	return (
