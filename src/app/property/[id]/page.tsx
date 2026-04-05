@@ -1,7 +1,9 @@
 "use client";
 import PropertyCard from "@/components/cards/PropertyCard";
 import { Button } from "@/components/ui/button";
-import { properties, reviews } from "@/data/properties";
+import { reviews } from "@/data/properties";
+import useAxios from "@/hooks/useAxios";
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
 	ArrowLeft,
@@ -22,13 +24,44 @@ import React, { useState } from "react";
 const PropertyDetails = () => {
 	const params = useParams();
 	const id = params.id;
-	const property = properties.find((p) => p._id === id);
+	const useaxios = useAxios();
+	const { data: property } = useQuery({
+		queryKey: ["property"],
+		queryFn: async () => {
+			const res = await useaxios.get(`/properties/${id}`);
+			return res.data.property;
+		},
+	});
+
 	const [activeImage, setActiveImage] = useState(0);
 	const [showTourModal, setShowTourModal] = useState(false);
+
 	const propertyReviews = reviews.filter((r) => r.propertyId === id);
-	const related = properties
-		.filter((p) => p._id !== id && p.type === property?.type)
-		.slice(0, 4);
+
+	// const { data: properties } = useQuery({
+	// 	queryKey: ["properties"],
+	// 	queryFn: async () => {
+	// 		const res = await useaxios.get(`/properties`);
+	// 		return res.data.properties;
+	// 	},
+	// });
+	// const related = properties
+	// 	.filter((p) => p._id !== id && p.type === property?.type)
+	// 	.slice(0, 4);
+
+	const { data: relatedProperties = [] } = useQuery({
+		queryKey: ["related-properties", property?.type, id],
+
+		queryFn: async () => {
+			const res = await useaxios.get(
+				`/properties?type=${property?.type}&excludeId=${id}`,
+			);
+			return res.data.relatedProperties || [];
+		},
+
+		// 🚀 important: wait until property is available
+		enabled: !!property?.type && !!id,
+	});
 
 	if (!property) {
 		return (
@@ -286,13 +319,13 @@ const PropertyDetails = () => {
 					</div>
 				</div>
 				{/* Related */}
-				{related.length > 0 && (
+				{relatedProperties.length > 0 && (
 					<div className="mt-16">
 						<h2 className="font-display text-2xl font-bold text-foreground mb-6">
 							Similar Properties
 						</h2>
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-							{related.map((p, i) => (
+							{relatedProperties.map((p, i) => (
 								<PropertyCard
 									key={p._id}
 									property={p}

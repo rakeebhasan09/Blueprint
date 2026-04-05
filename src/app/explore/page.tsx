@@ -1,7 +1,9 @@
 "use client";
 import PropertyCard from "@/components/cards/PropertyCard";
 import { Button } from "@/components/ui/button";
-import { properties } from "@/data/properties";
+import { Property } from "@/data/properties";
+import useAxios from "@/hooks/useAxios";
+import { useQuery } from "@tanstack/react-query";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import React, { useMemo, useState } from "react";
 
@@ -35,9 +37,19 @@ const ExplorePage = () => {
 	const [page, setPage] = useState(1);
 	const [sortBy, setSortBy] = useState("date");
 	const perPage = 8;
+	const useaxios = useAxios();
+
+	const { data: properties = [] } = useQuery<Property[]>({
+		queryKey: ["properties"],
+		queryFn: async () => {
+			const res = await useaxios.get("/properties");
+			return res.data.properties;
+		},
+	});
 
 	const filtered = useMemo(() => {
 		let result = [...properties];
+
 		if (search)
 			result = result.filter(
 				(p) =>
@@ -59,7 +71,7 @@ const ExplorePage = () => {
 					new Date(b.date).getTime() - new Date(a.date).getTime(),
 			);
 		return result;
-	}, [search, typeFilter, priceFilter, sortBy]);
+	}, [search, typeFilter, priceFilter, sortBy, properties]);
 
 	const totalPages = Math.ceil(filtered.length / perPage);
 
