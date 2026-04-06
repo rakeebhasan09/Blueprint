@@ -56,12 +56,11 @@ const PropertyDetails = () => {
 			const res = await useaxios.get(
 				`/properties?type=${property?.type}&excludeId=${id}`,
 			);
-			return res.data.relatedProperties || [];
+			return res.data.relatedProperties;
 		},
-
-		// 🚀 important: wait until property is available
-		enabled: !!property?.type && !!id,
 	});
+
+	console.log(relatedProperties);
 
 	if (!property) {
 		return (
@@ -319,11 +318,12 @@ const PropertyDetails = () => {
 					</div>
 				</div>
 				{/* Related */}
-				{relatedProperties.length > 0 && (
+				{relatedProperties.length > 0 ? (
 					<div className="mt-16">
 						<h2 className="font-display text-2xl font-bold text-foreground mb-6">
 							Similar Properties
 						</h2>
+
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 							{relatedProperties.map((p, i) => (
 								<PropertyCard
@@ -333,6 +333,12 @@ const PropertyDetails = () => {
 								/>
 							))}
 						</div>
+					</div>
+				) : (
+					<div className="mt-16 text-center">
+						<h2 className="text-xl font-semibold text-muted-foreground">
+							No related properties found 😔
+						</h2>
 					</div>
 				)}
 			</div>
