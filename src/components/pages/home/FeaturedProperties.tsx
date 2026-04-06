@@ -1,12 +1,21 @@
 import PropertyCard from "@/components/cards/PropertyCard";
 import PropertyCardSkeleton from "@/components/Skeletons/PropertyCardSkeleton";
-import { properties } from "@/data/properties";
+import useAxios from "@/hooks/useAxios";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 const FeaturedProperties = () => {
 	const [loading, setLoading] = useState(true);
+	const useaxios = useAxios();
+	const { data: featuredProperties = [] } = useQuery({
+		queryKey: ["featured"],
+		queryFn: async () => {
+			const res = await useaxios.get("/featured");
+			return res.data.featured;
+		},
+	});
 	useEffect(() => {
 		const timer = setTimeout(() => setLoading(false), 1500);
 		return () => clearTimeout(timer);
@@ -35,15 +44,13 @@ const FeaturedProperties = () => {
 						? Array.from({ length: 4 }).map((_, i) => (
 								<PropertyCardSkeleton key={i} />
 							))
-						: properties
-								.slice(0, 4)
-								.map((p, i) => (
-									<PropertyCard
-										key={p._id}
-										property={p}
-										index={i}
-									/>
-								))}
+						: featuredProperties.map((p, i) => (
+								<PropertyCard
+									key={p._id}
+									property={p}
+									index={i}
+								/>
+							))}
 				</div>
 			</div>
 		</section>
