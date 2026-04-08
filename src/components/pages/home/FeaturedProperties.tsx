@@ -44,7 +44,7 @@ const FeaturedProperties = () => {
 						? Array.from({ length: 4 }).map((_, i) => (
 								<PropertyCardSkeleton key={i} />
 							))
-						: featuredProperties.map((p, i) => (
+						: featuredProperties.map((p, i: number) => (
 								<PropertyCard
 									key={p._id}
 									property={p}

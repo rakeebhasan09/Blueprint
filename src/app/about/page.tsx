@@ -6,14 +6,14 @@ import ValuesSection from "@/components/pages/about/ValuesSection";
 import React from "react";
 
 const AboutPage = () => {
-	return (
-		<>
-			<BannerSection />
-			<ValuesSection />
-			<StorySection />
-			<TeamSection />
-		</>
-	);
+    return (
+        <>
+            <BannerSection />
+            <ValuesSection />
+            <StorySection />
+            <TeamSection />
+        </>
+    );
 };
 
 export default AboutPage;

@@ -38,17 +38,6 @@ const PropertyDetails = () => {
 
 	const propertyReviews = reviews.filter((r) => r.propertyId === id);
 
-	// const { data: properties } = useQuery({
-	// 	queryKey: ["properties"],
-	// 	queryFn: async () => {
-	// 		const res = await useaxios.get(`/properties`);
-	// 		return res.data.properties;
-	// 	},
-	// });
-	// const related = properties
-	// 	.filter((p) => p._id !== id && p.type === property?.type)
-	// 	.slice(0, 4);
-
 	const { data: relatedProperties = [] } = useQuery({
 		queryKey: ["related-properties", property?.type, id],
 
@@ -100,7 +89,7 @@ const PropertyDetails = () => {
 						/>
 					</div>
 					<div className="grid grid-cols-2 gap-4">
-						{property.images.map((img, i) => (
+						{property.images.map((img, i: number) => (
 							<button
 								key={i}
 								onClick={() => setActiveImage(i)}
@@ -325,7 +314,7 @@ const PropertyDetails = () => {
 						</h2>
 
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-							{relatedProperties.map((p, i) => (
+							{relatedProperties.map((p, i: number) => (
 								<PropertyCard
 									key={p._id}
 									property={p}

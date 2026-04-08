@@ -13,19 +13,19 @@ import StatisticsSections from "@/components/pages/home/StatisticsSections";
 import Testimonials from "@/components/pages/home/Testimonials";
 
 export default function Home() {
-	return (
-		<>
-			<HeroSection />
-			<CategoriesSection />
-			<FeaturedProperties />
-			<StatisticsSections />
-			<ServicesSection />
-			<PopularProperties />
-			<Testimonials />
-			<BlogSection />
-			<FAQSection />
-			<CTASection />
-			<NewsletterSection />
-		</>
-	);
+    return (
+        <>
+            <HeroSection />
+            <CategoriesSection />
+            <FeaturedProperties />
+            <StatisticsSections />
+            <ServicesSection />
+            <PopularProperties />
+            <Testimonials />
+            <BlogSection />
+            <FAQSection />
+            <CTASection />
+            <NewsletterSection />
+        </>
+    );
 }
