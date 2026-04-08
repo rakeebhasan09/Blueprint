@@ -21,9 +21,15 @@ const PopularProperties = () => {
                     Popular This Month
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {properties.slice(4, 8).map((p, i) => (
-                        <PropertyCard key={p._id} property={p} index={i} />
-                    ))}
+                    {popularProperties && popularProperties.length > 0 ? (
+                        popularProperties.map((p, i: number) => (
+                            <PropertyCard key={p._id} property={p} index={i} />
+                        ))
+                    ) : (
+                        <p className="text-center text-gray-500 mt-6">
+                            No popular property found
+                        </p>
+                    )}
                 </div>
             </div>
         </section>
