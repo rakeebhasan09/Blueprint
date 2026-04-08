@@ -13,6 +13,7 @@ const PopularProperties = () => {
             return res.data.popular;
         },
     });
+
     return (
         <section className="py-16">
             <div className="container">
