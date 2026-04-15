@@ -27,10 +27,9 @@ const Header = () => {
     const { data: session, status } = useSession();
     const [mounted, setMounted] = useState(false);
     const isAuthenticated = session;
-    const user = {
-        name: "Rakeeb Hasan",
-        role: "admin",
-    };
+    const user = session?.user;
+
+    console.log(session);
 
     const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
         if (typeof window !== "undefined") {
