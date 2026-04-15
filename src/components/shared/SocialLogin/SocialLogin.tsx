@@ -1,3 +1,5 @@
+'use client'
+import {signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import React from "react";
 
@@ -8,7 +10,7 @@ const SocialLogin = () => {
 			<Button
 				variant="outline"
 				className="rounded-xl h-11 text-sm"
-				onClick={() => {}}
+				onClick={() => signIn('google')}
 			>
 				<svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
 					<path
