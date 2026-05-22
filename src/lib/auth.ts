@@ -12,6 +12,29 @@ export const { handlers } = NextAuth({
         strategy: "jwt",
     },
     callbacks: {
+        async signIn({ user, account }) {
+            console.log("User signed in:", { user, account });
+            try {
+                const newUser = { user, account };
+                const response = await fetch(
+                    "http://localhost:5000/api/v1/register",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(newUser),
+                    },
+                );
+
+                const data = await response.json();
+                return true;
+            } catch (error) {
+                console.error("Error during sign-in:", error);
+                return false;
+            }
+        },
+
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;

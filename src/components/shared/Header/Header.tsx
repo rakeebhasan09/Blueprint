@@ -29,7 +29,7 @@ const Header = () => {
     const isAuthenticated = session;
     const user = session?.user;
 
-    console.log(session);
+    console.log("Session Data:", session);
 
     const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
         if (typeof window !== "undefined") {
@@ -117,11 +117,12 @@ const Header = () => {
                                         <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted hover:bg-muted/80 transition-colors">
                                             <div className="h-7 w-7 rounded-full bg-primary flex items-center justify-center">
                                                 <span className="text-xs font-bold text-primary-foreground">
-                                                    {user?.name.charAt(0)}
+                                                    {user?.name?.charAt(0) ??
+                                                        ""}
                                                 </span>
                                             </div>
                                             <span className="text-sm font-medium text-foreground">
-                                                {user?.name}
+                                                {user?.name ?? ""}
                                             </span>
                                             <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
                                         </button>
