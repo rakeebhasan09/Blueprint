@@ -14,6 +14,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 type LoginFormData = {
     fullname: string;
@@ -29,13 +31,23 @@ const RegisterForm = () => {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<LoginFormData>();
 
+    const router = useRouter();
+
     const handleLoginForm = async (data: LoginFormData) => {
-        // setLoading(true);
+        if (role === "") {
+            Swal.fire({
+                text: "Please select a role!",
+                icon: "error",
+            });
+            return;
+        }
+        setLoading(true);
         data.role = role;
-        console.log(data);
+
         const result = await fetch("http://localhost:5000/api/v1/register", {
             method: "POST",
             headers: {
@@ -43,8 +55,24 @@ const RegisterForm = () => {
             },
             body: JSON.stringify({ emailPasswordRegistrationData: data }),
         });
-        console.log(result);
-        // setLoading(false);
+        const response = await result.json();
+
+        // Show popup based on response
+        if (response.success === true) {
+            Swal.fire({
+                text: response.message,
+                icon: "success",
+            });
+            reset();
+            setLoading(false);
+            router.push("/login");
+        } else {
+            Swal.fire({
+                text: response.message,
+                icon: "error",
+            });
+            setLoading(false);
+        }
     };
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
