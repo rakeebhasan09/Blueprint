@@ -21,6 +21,7 @@ import {
     User,
     Users,
 } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -28,10 +29,10 @@ import { useState } from "react";
 const queryClient = new QueryClient();
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
-    const user = {
-        name: "Rakeeb Hasan",
-        role: "admin", // Change to "user" for normal user
-    };
+    const { data: session, status } = useSession();
+    const isAuthenticated = session;
+    const user = session?.user;
+
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -62,7 +63,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                     <nav className="flex-1 p-3 space-y-1">
                         {/* Normal User Route */}
-                        {user.role === "user" && (
+                        {user?.role === "user" && (
                             <>
                                 <Link
                                     href={"/dashboard"}
@@ -100,7 +101,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                             </>
                         )}
                         {/* Admin User Route */}
-                        {user.role === "admin" && (
+                        {user?.role === "admin" && (
                             <>
                                 <Link
                                     href={"/dashboard/admin"}
@@ -218,7 +219,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                 </button>
                             </div>
                             <nav className="flex-1 p-3 space-y-1">
-                                {user.role === "user" && (
+                                {user?.role === "user" && (
                                     <>
                                         <Link
                                             href={"/dashboard"}
@@ -264,7 +265,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                     </>
                                 )}
                                 {/* Admin User Route */}
-                                {user.role === "admin" && (
+                                {user?.role === "admin" && (
                                     <>
                                         <Link
                                             href={"/dashboard/admin"}
@@ -435,7 +436,10 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                         </Link>
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="flex items-center gap-2 text-destructive data-highlighted:bg-primary">
+                                    <DropdownMenuItem
+                                        onClick={() => signOut()}
+                                        className="flex items-center gap-2 text-destructive data-highlighted:bg-primary"
+                                    >
                                         <LogOut className="h-4 w-4" /> Logout
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>

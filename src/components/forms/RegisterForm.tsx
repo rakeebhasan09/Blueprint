@@ -48,13 +48,16 @@ const RegisterForm = () => {
         setLoading(true);
         data.role = role;
 
-        const result = await fetch("http://localhost:5000/api/v1/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
+        const result = await fetch(
+            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/register`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ emailPasswordRegistrationData: data }),
             },
-            body: JSON.stringify({ emailPasswordRegistrationData: data }),
-        });
+        );
         const response = await result.json();
 
         // Show popup based on response
@@ -146,12 +149,7 @@ const RegisterForm = () => {
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>Roles</SelectLabel>
-                                        <SelectItem
-                                            value="admin"
-                                            className="data-highlighted:bg-primary data-highlighted:text-foreground!"
-                                        >
-                                            Admin
-                                        </SelectItem>
+
                                         <SelectItem
                                             value="user"
                                             className="data-highlighted:bg-primary data-highlighted:text-foreground!"

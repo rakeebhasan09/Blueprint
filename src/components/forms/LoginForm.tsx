@@ -5,6 +5,9 @@ import { Building2, Eye, EyeOff } from "lucide-react";
 import { Button } from "../ui/button";
 import { useForm } from "react-hook-form";
 import SocialLogin from "../shared/SocialLogin/SocialLogin";
+import { signIn } from "next-auth/react";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 type LoginFormData = {
     email: string;
@@ -16,12 +19,39 @@ const LoginForm = () => {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<LoginFormData>();
+    const router = useRouter();
 
-    const handleLoginForm = (data: LoginFormData) => {
+    const handleLoginForm = async (data: LoginFormData) => {
         setLoading(true);
-        console.log(data);
+        const result = await signIn("credentials", {
+            email: data.email,
+            password: data.password,
+            redirect: false,
+        });
+
+        if (result?.error) {
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Login failed",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            setLoading(false);
+        } else {
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Login successful!",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+            reset();
+            router.push("/");
+        }
     };
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -83,7 +113,7 @@ const LoginForm = () => {
                                 />
                                 {errors.password?.type === "required" && (
                                     <p className="text-xs text-destructive mt-1">
-                                        Email is required!
+                                        Password is required!
                                     </p>
                                 )}
                                 <button
