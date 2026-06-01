@@ -23,6 +23,8 @@ const LoginForm = () => {
         formState: { errors },
     } = useForm<LoginFormData>();
     const router = useRouter();
+    const params = new URLSearchParams(window.location.search);
+    const callbackUrl = params.get("callbackUrl") || "/";
 
     const handleLoginForm = async (data: LoginFormData) => {
         setLoading(true);
@@ -50,7 +52,7 @@ const LoginForm = () => {
                 timer: 1500,
             });
             reset();
-            router.push("/");
+            router.push(callbackUrl);
         }
     };
     return (

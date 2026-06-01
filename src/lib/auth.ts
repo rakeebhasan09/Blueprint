@@ -44,7 +44,7 @@ export const { handlers } = NextAuth({
             try {
                 const newUser = { user, account };
                 const response = await fetch(
-                    "http://localhost:5000/api/v1/register",
+                    "http://localhost:5000/api/v1/auth/register",
                     {
                         method: "POST",
                         headers: {
@@ -62,24 +62,31 @@ export const { handlers } = NextAuth({
             }
         },
 
-        async jwt({ token, user }) {
-            console.log("JWT Callback - User:", user);
-            if (user) {
-                token.id = user.id;
-                token.email = user.email;
-                token.name = user.name;
-                token.role = user.role;
-            }
-            return token;
-        },
         async session({ session, token }) {
             if (session.user) {
-                session.user.id = token.id as string;
                 session.user.email = token.email as string;
                 session.user.name = token.name as string;
                 session.user.role = token.role as string;
             }
             return session;
+        },
+
+        async jwt({ token, user, account }) {
+            if (user) {
+                if (account?.provider != "credentials") {
+                    const dbUserRes = await fetch(
+                        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users?email=${user.email}`,
+                    );
+                    const dbUser = await dbUserRes.json();
+                    console.log("Google login user from database:", dbUser);
+                    token.email = dbUser?.users?.[0]?.email;
+                    token.role = dbUser?.users?.[0]?.role;
+                } else {
+                    token.email = user.email;
+                    token.role = user.role;
+                }
+            }
+            return token;
         },
     },
     secret: process.env.NEXTAUTH_SECRET,
