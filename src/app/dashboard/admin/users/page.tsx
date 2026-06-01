@@ -75,6 +75,19 @@ const UsersPage = () => {
     // Handle Update User Role
     const handleUpdateUserRole = (id: string, newRole: string) => {
         console.log("Update user role with id:", id, "to new role:", newRole);
+        const payload = { role: newRole };
+        useaxios.patch(`/users/${id}`, payload).then((res) => {
+            if (res.data.success) {
+                Swal.fire({
+                    title: "Updated!",
+                    text: `${res.data.message}`,
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                });
+                refetch();
+            }
+        });
     };
     return (
         <div className="space-y-6">
