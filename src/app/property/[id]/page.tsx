@@ -81,20 +81,34 @@ const PropertyDetails = () => {
     }, [user]);
 
     // Handle Schedule Tour form submission
-    const handleTourSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleTourSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // Handle form submission logic here
         const scheduledTourData = {
             propertyId: id,
+            propertyTitle: property?.title,
             customerName,
             customerEmail,
             customerPhone,
             tourDate,
             tourTime,
             tourType,
-            customerId: user?.id,
+            userId: user?.id,
+            status: "pending",
         };
-        console.log("Scheduled Tour Data:", scheduledTourData);
+
+        const response = await useaxios.post("/bookings", scheduledTourData);
+        if (response.data.success === true) {
+            Swal.fire({
+                text: response.data.message,
+                icon: "success",
+            });
+        } else {
+            Swal.fire({
+                text: response.data.message,
+                icon: "error",
+            });
+        }
 
         // Reset form and close modal
         setShowTourModal(false);

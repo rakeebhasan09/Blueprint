@@ -86,6 +86,7 @@ export const { handlers } = NextAuth({
                     token.email = dbUser?.users?.[0]?.email;
                     token.role = dbUser?.users?.[0]?.role;
                 } else {
+                    token.id = user.id;
                     token.email = user.email;
                     token.role = user.role;
                 }
