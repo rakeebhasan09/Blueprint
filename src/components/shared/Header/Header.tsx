@@ -29,8 +29,6 @@ const Header = () => {
     const isAuthenticated = session;
     const user = session?.user;
 
-    console.log("Google Login User:", user);
-
     const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
         if (typeof window !== "undefined") {
             return localStorage.getItem("theme") === "dark";

@@ -70,6 +70,7 @@ const PropertyDetails = () => {
     const [customerEmail, setCustomerEmail] = useState("");
     const [customerPhone, setCustomerPhone] = useState("");
     const [tourDate, setTourDate] = useState("");
+    const [tourTime, setTourTime] = useState("");
     const [tourType, setTourType] = useState("In-Person Tour");
 
     useEffect(() => {
@@ -89,11 +90,20 @@ const PropertyDetails = () => {
             customerEmail,
             customerPhone,
             tourDate,
+            tourTime,
             tourType,
             customerId: user?.id,
         };
         console.log("Scheduled Tour Data:", scheduledTourData);
+
+        // Reset form and close modal
         setShowTourModal(false);
+        setCustomerName("");
+        setCustomerEmail("");
+        setCustomerPhone("");
+        setTourDate("");
+        setTourTime("");
+        setTourType("In-Person Tour");
     };
 
     // If property not found
@@ -132,6 +142,7 @@ const PropertyDetails = () => {
                             height={300}
                             src={property.images[activeImage]}
                             alt={property.title}
+                            loading="eager"
                             className="w-full h-full object-cover"
                         />
                     </div>
@@ -146,6 +157,7 @@ const PropertyDetails = () => {
                                     width={600}
                                     height={300}
                                     src={img}
+                                    loading="eager"
                                     alt=""
                                     className="w-full h-full object-cover"
                                 />
@@ -420,13 +432,26 @@ const PropertyDetails = () => {
                                 }
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
                             />
-                            <input
-                                type="date"
-                                required
-                                value={tourDate}
-                                onChange={(e) => setTourDate(e.target.value)}
-                                className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
-                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input
+                                    type="date"
+                                    required
+                                    value={tourDate}
+                                    onChange={(e) =>
+                                        setTourDate(e.target.value)
+                                    }
+                                    className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
+                                />
+                                <input
+                                    type="time"
+                                    required
+                                    value={tourTime}
+                                    onChange={(e) =>
+                                        setTourTime(e.target.value)
+                                    }
+                                    className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
                             <select
                                 value={tourType}
                                 onChange={(e) => setTourType(e.target.value)}
