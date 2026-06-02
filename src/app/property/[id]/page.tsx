@@ -20,7 +20,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 
 const PropertyDetails = () => {
@@ -30,6 +30,7 @@ const PropertyDetails = () => {
     const id = params.id;
     const useaxios = useAxios();
     const session = useSession();
+    const user = session.data?.user;
 
     const { data: property } = useQuery({
         queryKey: ["property"],
@@ -65,6 +66,37 @@ const PropertyDetails = () => {
         setShowTourModal(true);
     };
 
+    const [customerName, setCustomerName] = useState("");
+    const [customerEmail, setCustomerEmail] = useState("");
+    const [customerPhone, setCustomerPhone] = useState("");
+    const [tourDate, setTourDate] = useState("");
+    const [tourType, setTourType] = useState("In-Person Tour");
+
+    useEffect(() => {
+        if (user) {
+            setCustomerName(user.name || "");
+            setCustomerEmail(user.email || "");
+        }
+    }, [user]);
+
+    // Handle Schedule Tour form submission
+    const handleTourSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Handle form submission logic here
+        const scheduledTourData = {
+            propertyId: id,
+            customerName,
+            customerEmail,
+            customerPhone,
+            tourDate,
+            tourType,
+            customerId: user?.id,
+        };
+        console.log("Scheduled Tour Data:", scheduledTourData);
+        setShowTourModal(false);
+    };
+
+    // If property not found
     if (!property) {
         return (
             <div className="bg-background">
@@ -91,7 +123,7 @@ const PropertyDetails = () => {
                 >
                     <ArrowLeft className="h-4 w-4" /> Back to Explore
                 </Link>
-                {JSON.stringify(session)}
+
                 {/* Image Gallery */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-10">
                     <div className="rounded-[20px] overflow-hidden aspect-4/3">
@@ -361,37 +393,45 @@ const PropertyDetails = () => {
                         <h3 className="font-display text-xl font-bold text-foreground mb-4">
                             Schedule a Tour
                         </h3>
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                setShowTourModal(false);
-                            }}
-                            className="space-y-4"
-                        >
+                        <form onSubmit={handleTourSubmit} className="space-y-4">
                             <input
                                 type="text"
                                 placeholder="Your Name"
                                 required
+                                readOnly
+                                value={customerName}
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="email"
                                 placeholder="Email Address"
                                 required
+                                readOnly
+                                value={customerEmail}
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="text"
                                 placeholder="Phone Number"
                                 required
+                                value={customerPhone}
+                                onChange={(e) =>
+                                    setCustomerPhone(e.target.value)
+                                }
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="date"
                                 required
+                                value={tourDate}
+                                onChange={(e) => setTourDate(e.target.value)}
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
                             />
-                            <select className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary">
+                            <select
+                                value={tourType}
+                                onChange={(e) => setTourType(e.target.value)}
+                                className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
+                            >
                                 <option>In-Person Tour</option>
                                 <option>Virtual Tour</option>
                             </select>

@@ -67,6 +67,7 @@ export const { handlers } = NextAuth({
 
         async session({ session, token }) {
             if (session.user) {
+                session.user.id = token.id as string;
                 session.user.email = token.email as string;
                 session.user.name = token.name as string;
                 session.user.role = token.role as string;
@@ -81,7 +82,7 @@ export const { handlers } = NextAuth({
                         `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users?email=${user.email}`,
                     );
                     const dbUser = await dbUserRes.json();
-                    console.log("Google login user from database:", dbUser);
+                    token.id = dbUser?.users?.[0]?._id;
                     token.email = dbUser?.users?.[0]?.email;
                     token.role = dbUser?.users?.[0]?.role;
                 } else {

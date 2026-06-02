@@ -423,7 +423,7 @@ export const reviews: Review[] = [
 ];
 
 export interface User {
-    id: string;
+    _id: string;
     name: string;
     email: string;
     role: "user" | "manager" | "admin";
@@ -434,7 +434,7 @@ export interface User {
 
 export const mockUsers: User[] = [
     {
-        id: "u1",
+        _id: "u1",
         name: "John Doe",
         email: "john@example.com",
         role: "user",
@@ -443,7 +443,7 @@ export const mockUsers: User[] = [
         bookings: 3,
     },
     {
-        id: "u2",
+        _id: "u2",
         name: "Jane Smith",
         email: "jane@example.com",
         role: "manager",
@@ -452,7 +452,7 @@ export const mockUsers: User[] = [
         bookings: 1,
     },
     {
-        id: "u3",
+        _id: "u3",
         name: "Admin User",
         email: "admin@blueprint.com",
         role: "admin",
@@ -461,7 +461,7 @@ export const mockUsers: User[] = [
         bookings: 0,
     },
     {
-        id: "u4",
+        _id: "u4",
         name: "Alice Johnson",
         email: "alice@example.com",
         role: "user",
@@ -470,7 +470,7 @@ export const mockUsers: User[] = [
         bookings: 5,
     },
     {
-        id: "u5",
+        _id: "u5",
         name: "Bob Wilson",
         email: "bob@example.com",
         role: "user",
