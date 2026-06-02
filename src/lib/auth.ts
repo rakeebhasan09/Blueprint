@@ -41,6 +41,10 @@ export const { handlers } = NextAuth({
     },
     callbacks: {
         async signIn({ user, account }) {
+            if (account?.provider === "credentials") {
+                return true;
+            }
+
             try {
                 const newUser = { user, account };
                 const response = await fetch(
@@ -57,7 +61,6 @@ export const { handlers } = NextAuth({
                 const data = await response.json();
                 return true;
             } catch (error) {
-                console.error("Error during sign-in:", error);
                 return false;
             }
         },

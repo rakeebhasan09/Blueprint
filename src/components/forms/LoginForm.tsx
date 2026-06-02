@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import SocialLogin from "../shared/SocialLogin/SocialLogin";
 import { signIn } from "next-auth/react";
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type LoginFormData = {
     email: string;
@@ -23,7 +23,7 @@ const LoginForm = () => {
         formState: { errors },
     } = useForm<LoginFormData>();
     const router = useRouter();
-    const params = new URLSearchParams(window.location.search);
+    const params = useSearchParams();
     const callbackUrl = params.get("callbackUrl") || "/";
 
     const handleLoginForm = async (data: LoginFormData) => {

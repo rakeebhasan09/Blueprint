@@ -16,15 +16,21 @@ import {
     Star,
     User,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
+import Swal from "sweetalert2";
 
 const PropertyDetails = () => {
+    const [activeImage, setActiveImage] = useState(0);
+    const [showTourModal, setShowTourModal] = useState(false);
     const params = useParams();
     const id = params.id;
     const useaxios = useAxios();
+    const session = useSession();
+
     const { data: property } = useQuery({
         queryKey: ["property"],
         queryFn: async () => {
@@ -32,9 +38,6 @@ const PropertyDetails = () => {
             return res.data.property;
         },
     });
-
-    const [activeImage, setActiveImage] = useState(0);
-    const [showTourModal, setShowTourModal] = useState(false);
 
     const propertyReviews = reviews.filter((r) => r.propertyId === id);
 
@@ -49,14 +52,25 @@ const PropertyDetails = () => {
         },
     });
 
-    console.log(relatedProperties);
+    // Handle Schedule Tour
+    const handleScheduleTour = () => {
+        if (session.status !== "authenticated") {
+            // Handle unauthenticated user
+            Swal.fire({
+                text: "Please log in to schedule a tour.",
+                icon: "info",
+            });
+            return;
+        }
+        setShowTourModal(true);
+    };
 
     if (!property) {
         return (
             <div className="bg-background">
                 <div className="py-24 text-center">
                     <h1 className="font-display text-2xl font-bold text-foreground">
-                        Property not found
+                        Property not found 😔
                     </h1>
                     <Link
                         href="/explore"
@@ -77,6 +91,7 @@ const PropertyDetails = () => {
                 >
                     <ArrowLeft className="h-4 w-4" /> Back to Explore
                 </Link>
+                {JSON.stringify(session)}
                 {/* Image Gallery */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-10">
                     <div className="rounded-[20px] overflow-hidden aspect-4/3">
@@ -284,7 +299,7 @@ const PropertyDetails = () => {
                                 </div>
                                 <Button
                                     className="w-full mb-3 rounded-xl py-5"
-                                    onClick={() => setShowTourModal(true)}
+                                    onClick={handleScheduleTour}
                                 >
                                     Schedule Tour
                                 </Button>
