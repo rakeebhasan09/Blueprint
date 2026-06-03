@@ -26,6 +26,12 @@ import Swal from "sweetalert2";
 const PropertyDetails = () => {
     const [activeImage, setActiveImage] = useState(0);
     const [showTourModal, setShowTourModal] = useState(false);
+    const [customerName, setCustomerName] = useState("");
+    const [customerEmail, setCustomerEmail] = useState("");
+    const [customerPhone, setCustomerPhone] = useState("");
+    const [tourDate, setTourDate] = useState("");
+    const [tourTime, setTourTime] = useState("");
+    const [tourType, setTourType] = useState("In-Person Tour");
     const params = useParams();
     const id = params.id;
     const useaxios = useAxios();
@@ -66,13 +72,6 @@ const PropertyDetails = () => {
         setShowTourModal(true);
     };
 
-    const [customerName, setCustomerName] = useState("");
-    const [customerEmail, setCustomerEmail] = useState("");
-    const [customerPhone, setCustomerPhone] = useState("");
-    const [tourDate, setTourDate] = useState("");
-    const [tourTime, setTourTime] = useState("");
-    const [tourType, setTourType] = useState("In-Person Tour");
-
     useEffect(() => {
         if (user) {
             setCustomerName(user.name || "");
@@ -95,6 +94,7 @@ const PropertyDetails = () => {
             tourType,
             userId: user?.id,
             status: "pending",
+            bookingId: `BK-${Math.floor(1000 + Math.random() * 9000)}-${id?.slice(-6)}`,
         };
 
         const response = await useaxios.post("/bookings", scheduledTourData);

@@ -4,8 +4,15 @@ import { getToken } from "next-auth/jwt";
 
 const privateRoutes = [
     "/dashboard",
-    "/dashboard/settings",
+    "/dashboard/bookings",
+    "/dashboard/reviews",
     "/dashboard/profile",
+    "/dashboard/admin",
+    "/dashboard/admin/listings",
+    "/dashboard/admin/users",
+    "/dashboard/admin/orders",
+    "/dashboard/admin/analytics",
+    "/dashboard/admin/settings",
 ];
 
 // This function can be marked `async` if using `await` inside

@@ -2,7 +2,7 @@ import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const { handlers } = NextAuth({
+export const { handlers, auth } = NextAuth({
     providers: [
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -48,7 +48,7 @@ export const { handlers } = NextAuth({
             try {
                 const newUser = { user, account };
                 const response = await fetch(
-                    "http://localhost:5000/api/v1/auth/register",
+                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/register`,
                     {
                         method: "POST",
                         headers: {

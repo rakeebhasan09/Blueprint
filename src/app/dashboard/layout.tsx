@@ -30,7 +30,6 @@ const queryClient = new QueryClient();
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     const { data: session, status } = useSession();
-    const isAuthenticated = session;
     const user = session?.user;
 
     const pathname = usePathname();
@@ -398,7 +397,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                     <button className="flex items-center gap-2 px-2 py-1.5 rounded-full hover:bg-muted transition-colors">
                                         <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                                             <span className="text-sm font-bold text-primary-foreground">
-                                                {user?.name.charAt(0)}
+                                                {user?.name?.charAt(0)}
                                             </span>
                                         </div>
                                         <span className="hidden sm:block text-sm font-medium text-foreground">
