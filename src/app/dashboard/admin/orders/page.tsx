@@ -6,6 +6,7 @@ import { Eye, Pencil, Trash } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Swal from "sweetalert2";
 
 interface Booking {
     _id?: string;
@@ -48,6 +49,36 @@ const OrdersPage = () => {
     const handleViewBookingDetails = (booking: object) => {
         setSelectedForViewDetails(booking);
         setshowViewDetailsModal(true);
+    };
+
+    // Handle Delete
+    const handleDeleteBooking = (bookingId: string) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                useaxios
+                    .delete(
+                        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/bookings/${bookingId}`,
+                    )
+                    .then((res) => {
+                        if (res.data.success) {
+                            Swal.fire({
+                                title: "Deleted!",
+                                text: `${res.data.message}`,
+                                icon: "success",
+                            });
+                            refetch();
+                        }
+                    });
+            }
+        });
     };
     return (
         <div className="space-y-6">
@@ -137,7 +168,12 @@ const OrdersPage = () => {
                                         <button className="px-3 py-2 mr-2 rounded-lg bg-accent text-white">
                                             <Pencil size={16} />
                                         </button>
-                                        <button className="px-3 py-2 rounded-lg bg-destructive text-white">
+                                        <button
+                                            onClick={() =>
+                                                handleDeleteBooking(b._id)
+                                            }
+                                            className="px-3 py-2 rounded-lg bg-destructive text-white"
+                                        >
                                             <Trash size={16} />
                                         </button>
                                     </td>

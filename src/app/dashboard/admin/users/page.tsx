@@ -51,7 +51,7 @@ const UsersPage = () => {
     const handleDeleteUser = (id: string) => {
         Swal.fire({
             title: "Are you sure?",
-            text: `You won't be able to revert ${id}!`,
+            text: `You won't be able to revert!`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -152,7 +152,7 @@ const UsersPage = () => {
                                         {u.createdAt.split("T")[0]}
                                     </td>
                                     <td className="p-4 text-sm text-foreground tabular-nums text-nowrap">
-                                        {u.bookings ? u.bookings : "0"}
+                                        {u.bookingCount ? u.bookingCount : "0"}
                                     </td>
                                     <td className="text-center text-nowrap">
                                         <button className="px-3 py-2 mr-2 rounded-lg bg-secondary text-white">
@@ -190,6 +190,7 @@ const UsersPage = () => {
                     </table>
                 </div>
             </div>
+            {/* Update user role popup */}
             <AlertDialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
