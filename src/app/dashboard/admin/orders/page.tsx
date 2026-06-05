@@ -1,12 +1,20 @@
 "use client";
-import { mockBookings } from "@/components/pages/dashboard/overview/OverviewSection";
 import useAxios from "@/hooks/useAxios";
 import { useQuery } from "@tanstack/react-query";
 import { Eye, Pencil, Trash } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface Booking {
     _id?: string;
@@ -19,18 +27,25 @@ interface Booking {
     tourType?: string;
     status?: string;
     propertyId?: string;
+    bookingId?: string;
 }
 
 const OrdersPage = () => {
     const [showViewDetailsModal, setshowViewDetailsModal] = useState(false);
+    const [updateOrderStatusModal, setUpdateOrderStatusModal] = useState(false);
+
     const [selectedForViewDetails, setSelectedForViewDetails] =
+        useState<Booking | null>(null);
+
+    const [selectedForUpdateStatus, setSelectedForUpdateStatus] =
         useState<Booking | null>(null);
     const [filter, setFilter] = useState("All");
     const useaxios = useAxios();
 
     useEffect(() => {
-        console.log(selectedForViewDetails);
-    }, [selectedForViewDetails]);
+        setSelectedForViewDetails(selectedForViewDetails);
+        setUpdateOrderStatusModal(updateOrderStatusModal);
+    }, [selectedForViewDetails, updateOrderStatusModal]);
 
     const { data: bookingsData, refetch } = useQuery({
         queryKey: ["bookings"],
@@ -49,6 +64,37 @@ const OrdersPage = () => {
     const handleViewBookingDetails = (booking: object) => {
         setSelectedForViewDetails(booking);
         setshowViewDetailsModal(true);
+    };
+
+    // Handle Update Order Status Pending to Confirm / Canelled
+    const showUpdateStatusModal = (booking: object) => {
+        setSelectedForUpdateStatus(booking);
+        setUpdateOrderStatusModal(true);
+        console.log(selectedForUpdateStatus);
+    };
+
+    const handleUpdateStatus = (_id: string, newStatus: string) => {
+        const payload = {
+            status: newStatus,
+        };
+        useaxios
+            .patch(
+                `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/bookings/${_id}`,
+                payload,
+            )
+            .then((res) => {
+                if (res.data.success) {
+                    setUpdateOrderStatusModal(false);
+                    Swal.fire({
+                        title: "Updated!",
+                        text: `${res.data.message}`,
+                        icon: "success",
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    refetch();
+                }
+            });
     };
 
     // Handle Delete
@@ -83,11 +129,11 @@ const OrdersPage = () => {
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-2">
-                {["All", "Confirmed", "Pending", "Cancelled"].map((f) => (
+                {["All", "confirmed", "pending", "cancelled"].map((f) => (
                     <button
                         key={f}
                         onClick={() => setFilter(f)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                     >
                         {f}
                     </button>
@@ -151,7 +197,7 @@ const OrdersPage = () => {
                                     </td>
                                     <td className="p-4 text-nowrap">
                                         <span
-                                            className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${b.status === "Confirmed" ? "bg-secondary/10 text-secondary" : b.status === "Pending" ? "bg-accent/10 text-accent" : "bg-destructive/10 text-destructive"}`}
+                                            className={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${b.status === "confirmed" ? "bg-secondary/10 text-secondary" : b.status === "pending" ? "bg-accent/10 text-accent" : "bg-destructive/10 text-destructive"}`}
                                         >
                                             {b.status}
                                         </span>
@@ -165,7 +211,21 @@ const OrdersPage = () => {
                                         >
                                             <Eye size={16} />
                                         </button>
-                                        <button className="px-3 py-2 mr-2 rounded-lg bg-accent text-white">
+                                        <button
+                                            disabled={
+                                                b.status === "confirmed" ||
+                                                b.status === "cancelled"
+                                            }
+                                            onClick={() =>
+                                                showUpdateStatusModal(b)
+                                            }
+                                            className={`px-3 py-2 mr-2 rounded-lg bg-accent text-white ${
+                                                b.status === "confirmed" ||
+                                                b.status === "cancelled"
+                                                    ? "opacity-50"
+                                                    : "opacity-100"
+                                            }`}
+                                        >
                                             <Pencil size={16} />
                                         </button>
                                         <button
@@ -249,6 +309,77 @@ const OrdersPage = () => {
 
                         <button
                             onClick={() => setshowViewDetailsModal(false)}
+                            className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
+                        >
+                            ✕
+                        </button>
+                    </motion.div>
+                </div>
+            )}
+
+            {/* Update Status Modal */}
+            {updateOrderStatusModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-foreground/30 backdrop-blur-sm" />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="relative bg-card rounded-2xl shadow-elevated border border-border p-8 w-full max-w-lg"
+                    >
+                        <h3 className="font-display text-xl font-bold text-foreground mb-4">
+                            Update Order Status...
+                        </h3>
+
+                        <div>
+                            <p>Target ID: {selectedForUpdateStatus?._id}</p>
+                            <p>
+                                Booking ID: {selectedForUpdateStatus?.bookingId}
+                            </p>
+                            <p>
+                                Property Title:{" "}
+                                {selectedForUpdateStatus?.propertyTitle}
+                            </p>
+                            <p>Set New Status</p>
+                            <div>
+                                <Select
+                                    onValueChange={(newStatus) => {
+                                        if (!selectedForUpdateStatus?._id)
+                                            return;
+                                        handleUpdateStatus(
+                                            selectedForUpdateStatus?._id,
+                                            newStatus,
+                                        );
+                                    }}
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select a status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>
+                                                New Status
+                                            </SelectLabel>
+
+                                            <SelectItem
+                                                value="confirmed"
+                                                className="data-highlighted:bg-primary data-highlighted:text-foreground!"
+                                            >
+                                                confirmed
+                                            </SelectItem>
+                                            <SelectItem
+                                                value="cancelled"
+                                                className="data-highlighted:bg-primary data-highlighted:text-foreground!"
+                                            >
+                                                cancelled
+                                            </SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+
+                        <button
+                            onClick={() => setUpdateOrderStatusModal(false)}
                             className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
                         >
                             ✕

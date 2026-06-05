@@ -74,7 +74,6 @@ const UsersPage = () => {
 
     // Handle Update User Role
     const handleUpdateUserRole = (id: string, newRole: string) => {
-        console.log("Update user role with id:", id, "to new role:", newRole);
         const payload = { role: newRole };
         useaxios.patch(`/users/${id}`, payload).then((res) => {
             if (res.data.success) {
