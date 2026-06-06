@@ -29,3 +29,13 @@ npm run dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 //
+
+Tech Stack's I used for this project
+
+1. Next JS
+2. TypeScript
+3. Axios
+4. TanTanStack Query
+5. react hook form
+6. shadcn
+7. Tailwind CSS
