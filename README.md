@@ -39,3 +39,5 @@ Tech Stack's I used for this project
 5. react hook form
 6. shadcn
 7. Tailwind CSS
+8. swiper js
+9. Framar motion
