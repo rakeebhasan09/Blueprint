@@ -1,23 +1,41 @@
 "use client";
 import { mockBookings } from "@/components/pages/dashboard/overview/OverviewSection";
-import React, { useState } from "react";
+import useAxios from "@/hooks/useAxios";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
 const MyBookingsPage = () => {
     const [filter, setFilter] = useState("All");
+    const session = useSession();
+    const user = session.data?.user;
+    const userEmail = user?.email;
 
-    const bookings = mockBookings.filter((b) => b.userId === "u1");
+    const useaxios = useAxios();
+    const { data: userBookings = [] } = useQuery({
+        queryKey: ["userBookings", userEmail],
+        enabled: !!userEmail,
+        queryFn: async () => {
+            const res = await useaxios.get(
+                `/bookings?customerEmail=${userEmail}`,
+            );
+
+            return res.data.bookings;
+        },
+    });
+
     const filtered =
         filter === "All"
-            ? bookings
-            : bookings.filter((b) => b.status === filter);
+            ? userBookings
+            : userBookings.filter((b: any) => b.status === filter);
     return (
         <div className="space-y-6">
             <div className="flex items-center gap-2">
-                {["All", "Confirmed", "Pending", "Cancelled"].map((f) => (
+                {["All", "confirmed", "pending", "cancelled"].map((f) => (
                     <button
                         key={f}
                         onClick={() => setFilter(f)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+                        className={`px-4 py-2 capitalize rounded-lg text-sm font-medium transition-colors ${filter === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                     >
                         {f}
                     </button>
@@ -44,26 +62,32 @@ const MyBookingsPage = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
-                            {filtered.map((b) => (
+                            {filtered.map((b: any) => (
                                 <tr
-                                    key={b.id}
+                                    key={b._id}
                                     className="hover:bg-muted/20 transition-colors"
                                 >
                                     <td className="p-4 text-sm font-medium text-foreground">
                                         {b.propertyTitle}
                                     </td>
                                     <td className="p-4 text-sm text-muted-foreground tabular-nums">
-                                        {b.date}
+                                        {b.tourDate}
                                     </td>
                                     <td className="p-4 text-sm text-muted-foreground">
-                                        {b.time}
+                                        {new Date(
+                                            `1970-01-01T${b.tourTime}`,
+                                        ).toLocaleTimeString("en-US", {
+                                            hour: "numeric",
+                                            minute: "2-digit",
+                                            hour12: true,
+                                        })}
                                     </td>
                                     <td className="p-4">
                                         <span
-                                            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                                b.status === "Confirmed"
+                                            className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                                                b.status === "confirmed"
                                                     ? "bg-secondary/10 text-secondary"
-                                                    : b.status === "Pending"
+                                                    : b.status === "pending"
                                                       ? "bg-accent/10 text-accent"
                                                       : "bg-destructive/10 text-destructive"
                                             }`}

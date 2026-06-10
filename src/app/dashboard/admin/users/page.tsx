@@ -31,7 +31,6 @@ const UsersPage = () => {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const useaxios = useAxios();
-    const [role, setRole] = useState("");
 
     const { data: users = [], refetch } = useQuery({
         queryKey: ["users"],
