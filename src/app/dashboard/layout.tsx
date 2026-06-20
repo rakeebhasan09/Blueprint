@@ -15,6 +15,7 @@ import {
     ChevronRight,
     LayoutDashboard,
     LogOut,
+    Mail,
     Menu,
     Settings,
     Star,
@@ -159,6 +160,17 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                     {!collapsed && (
                                         <span>Manage Analytics</span>
                                     )}
+                                </Link>
+                                <Link
+                                    href={"/dashboard/admin/contact"}
+                                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+                                        pathname === "/dashboard/admin/contact"
+                                            ? "bg-primary/10 text-primary shadow-sm"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                    }`}
+                                >
+                                    <Mail className="h-4 w-4 shrink-0" />
+                                    {!collapsed && <span>Contact</span>}
                                 </Link>
                                 <Link
                                     href={"/dashboard/admin/settings"}
@@ -334,6 +346,18 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                             {!collapsed && (
                                                 <span>Manage Analytics</span>
                                             )}
+                                        </Link>
+                                        <Link
+                                            href={"/dashboard/admin/contact"}
+                                            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ease-blueprint ${
+                                                pathname ===
+                                                "/dashboard/admin/contact"
+                                                    ? "bg-primary/10 text-primary shadow-sm"
+                                                    : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                            }`}
+                                        >
+                                            <BarChart3 className="h-4 w-4 shrink-0" />
+                                            {!collapsed && <span>Contact</span>}
                                         </Link>
                                         <Link
                                             href={"/dashboard/admin/settings"}
