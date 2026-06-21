@@ -356,7 +356,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                                     : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                             }`}
                                         >
-                                            <BarChart3 className="h-4 w-4 shrink-0" />
+                                            <Mail className="h-4 w-4 shrink-0" />
                                             {!collapsed && <span>Contact</span>}
                                         </Link>
                                         <Link

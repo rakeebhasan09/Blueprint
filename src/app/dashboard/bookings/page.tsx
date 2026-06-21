@@ -10,8 +10,8 @@ const MyBookingsPage = () => {
     const session = useSession();
     const user = session.data?.user;
     const userEmail = user?.email;
-
     const useaxios = useAxios();
+
     const { data: userBookings = [] } = useQuery({
         queryKey: ["userBookings", userEmail],
         enabled: !!userEmail,
