@@ -501,3 +501,11 @@ export interface TAddProperty {
     image: string;
     images: string;
 }
+
+export interface TContact {
+    _id: string;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+}
