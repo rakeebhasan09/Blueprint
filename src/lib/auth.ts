@@ -17,7 +17,7 @@ export const { handlers } = NextAuth({
             try {
                 const newUser = { user, account };
                 const response = await fetch(
-                    "http://localhost:5000/api/v1/register",
+                    `${process.env.NEXT_PUBLIC_API_URL}/register`,
                     {
                         method: "POST",
                         headers: {
@@ -39,12 +39,17 @@ export const { handlers } = NextAuth({
             if (user) {
                 token.id = user.id;
                 token.email = user.email;
+                token.role =
+                    (user as { role?: "user" | "manager" | "admin" }).role ??
+                    "user";
             }
             return token;
         },
         async session({ session, token }) {
             if (session.user) {
                 session.user.id = token.id as string;
+                session.user.role =
+                    (token.role as "user" | "manager" | "admin") ?? "user";
             }
             return session;
         },

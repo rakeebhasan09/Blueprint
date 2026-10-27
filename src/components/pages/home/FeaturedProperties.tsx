@@ -1,5 +1,6 @@
 import PropertyCard from "@/components/cards/PropertyCard";
 import PropertyCardSkeleton from "@/components/Skeletons/PropertyCardSkeleton";
+import { type Property } from "@/data/properties";
 import useAxios from "@/hooks/useAxios";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
@@ -9,11 +10,11 @@ import React, { useEffect, useState } from "react";
 const FeaturedProperties = () => {
 	const [loading, setLoading] = useState(true);
 	const useaxios = useAxios();
-	const { data: featuredProperties = [] } = useQuery({
+	const { data: featuredProperties = [] as Array<Property> } = useQuery({
 		queryKey: ["featured"],
 		queryFn: async () => {
 			const res = await useaxios.get("/featured");
-			return res.data.featured;
+			return res.data.featured as Property[];
 		},
 	});
 	useEffect(() => {

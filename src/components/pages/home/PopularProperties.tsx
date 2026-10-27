@@ -1,16 +1,16 @@
 import PropertyCard from "@/components/cards/PropertyCard";
-import { properties } from "@/data/properties";
+import { type Property } from "@/data/properties";
 import useAxios from "@/hooks/useAxios";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
 const PopularProperties = () => {
     const useaxios = useAxios();
-    const { data: popularProperties } = useQuery({
+    const { data: popularProperties = [] as Property[] } = useQuery({
         queryKey: ["popular"],
         queryFn: async () => {
             const res = await useaxios.get("/popular");
-            return res.data.popular;
+            return res.data.popular as Property[];
         },
     });
 
