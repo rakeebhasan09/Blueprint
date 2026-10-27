@@ -16,15 +16,28 @@ import {
     Star,
     User,
 } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const PropertyDetails = () => {
+    const [activeImage, setActiveImage] = useState(0);
+    const [showTourModal, setShowTourModal] = useState(false);
+    const [customerName, setCustomerName] = useState("");
+    const [customerEmail, setCustomerEmail] = useState("");
+    const [customerPhone, setCustomerPhone] = useState("");
+    const [tourDate, setTourDate] = useState("");
+    const [tourTime, setTourTime] = useState("");
+    const [tourType, setTourType] = useState("In-Person Tour");
     const params = useParams();
     const id = params.id;
     const useaxios = useAxios();
+    const session = useSession();
+    const user = session.data?.user;
+
     const { data: property } = useQuery({
         queryKey: ["property"],
         queryFn: async () => {
@@ -32,9 +45,6 @@ const PropertyDetails = () => {
             return res.data.property;
         },
     });
-
-    const [activeImage, setActiveImage] = useState(0);
-    const [showTourModal, setShowTourModal] = useState(false);
 
     const propertyReviews = reviews.filter((r) => r.propertyId === id);
 
@@ -49,14 +59,74 @@ const PropertyDetails = () => {
         },
     });
 
-    console.log(relatedProperties);
+    // Handle Schedule Tour
+    const handleScheduleTour = () => {
+        if (session.status !== "authenticated") {
+            // Handle unauthenticated user
+            Swal.fire({
+                text: "Please log in to schedule a tour.",
+                icon: "info",
+            });
+            return;
+        }
+        setShowTourModal(true);
+    };
 
+    useEffect(() => {
+        if (user) {
+            setCustomerName(user.name || "");
+            setCustomerEmail(user.email || "");
+        }
+    }, [user]);
+
+    // Handle Schedule Tour form submission
+    const handleTourSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        // Handle form submission logic here
+        const scheduledTourData = {
+            propertyId: id,
+            propertyTitle: property?.title,
+            customerName,
+            customerEmail,
+            customerPhone,
+            tourDate,
+            tourTime,
+            tourType,
+            userId: user?.id,
+            status: "pending",
+            bookingId: `BK-${Math.floor(1000 + Math.random() * 9000)}-${id?.slice(-6)}`,
+        };
+
+        const response = await useaxios.post("/bookings", scheduledTourData);
+        if (response.data.success === true) {
+            Swal.fire({
+                text: response.data.message,
+                icon: "success",
+            });
+        } else {
+            Swal.fire({
+                text: response.data.message,
+                icon: "error",
+            });
+        }
+
+        // Reset form and close modal
+        setShowTourModal(false);
+        setCustomerName("");
+        setCustomerEmail("");
+        setCustomerPhone("");
+        setTourDate("");
+        setTourTime("");
+        setTourType("In-Person Tour");
+    };
+
+    // If property not found
     if (!property) {
         return (
             <div className="bg-background">
                 <div className="py-24 text-center">
                     <h1 className="font-display text-2xl font-bold text-foreground">
-                        Property not found
+                        Property not found 😔
                     </h1>
                     <Link
                         href="/explore"
@@ -77,6 +147,7 @@ const PropertyDetails = () => {
                 >
                     <ArrowLeft className="h-4 w-4" /> Back to Explore
                 </Link>
+
                 {/* Image Gallery */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-10">
                     <div className="rounded-[20px] overflow-hidden aspect-4/3">
@@ -85,6 +156,7 @@ const PropertyDetails = () => {
                             height={300}
                             src={property.images[activeImage]}
                             alt={property.title}
+                            loading="eager"
                             className="w-full h-full object-cover"
                         />
                     </div>
@@ -99,6 +171,7 @@ const PropertyDetails = () => {
                                     width={600}
                                     height={300}
                                     src={img}
+                                    loading="eager"
                                     alt=""
                                     className="w-full h-full object-cover"
                                 />
@@ -284,7 +357,7 @@ const PropertyDetails = () => {
                                 </div>
                                 <Button
                                     className="w-full mb-3 rounded-xl py-5"
-                                    onClick={() => setShowTourModal(true)}
+                                    onClick={handleScheduleTour}
                                 >
                                     Schedule Tour
                                 </Button>
@@ -346,37 +419,58 @@ const PropertyDetails = () => {
                         <h3 className="font-display text-xl font-bold text-foreground mb-4">
                             Schedule a Tour
                         </h3>
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                setShowTourModal(false);
-                            }}
-                            className="space-y-4"
-                        >
+                        <form onSubmit={handleTourSubmit} className="space-y-4">
                             <input
                                 type="text"
                                 placeholder="Your Name"
                                 required
+                                readOnly
+                                value={customerName}
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="email"
                                 placeholder="Email Address"
                                 required
+                                readOnly
+                                value={customerEmail}
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
                             />
                             <input
                                 type="text"
                                 placeholder="Phone Number"
                                 required
+                                value={customerPhone}
+                                onChange={(e) =>
+                                    setCustomerPhone(e.target.value)
+                                }
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm placeholder:text-muted-foreground outline-none focus:ring-2 focus:ring-primary"
                             />
-                            <input
-                                type="date"
-                                required
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <input
+                                    type="date"
+                                    required
+                                    value={tourDate}
+                                    onChange={(e) =>
+                                        setTourDate(e.target.value)
+                                    }
+                                    className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
+                                />
+                                <input
+                                    type="time"
+                                    required
+                                    value={tourTime}
+                                    onChange={(e) =>
+                                        setTourTime(e.target.value)
+                                    }
+                                    className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
+                                />
+                            </div>
+                            <select
+                                value={tourType}
+                                onChange={(e) => setTourType(e.target.value)}
                                 className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary"
-                            />
-                            <select className="w-full h-11 px-4 rounded-xl border border-border bg-background text-foreground text-sm outline-none focus:ring-2 focus:ring-primary">
+                            >
                                 <option>In-Person Tour</option>
                                 <option>Virtual Tour</option>
                             </select>

@@ -29,8 +29,6 @@ const Header = () => {
     const isAuthenticated = session;
     const user = session?.user;
 
-    console.log("Session Data:", session);
-
     const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
         if (typeof window !== "undefined") {
             return localStorage.getItem("theme") === "dark";
@@ -135,8 +133,8 @@ const Header = () => {
                                             <Link
                                                 href={
                                                     user?.role === "admin"
-                                                        ? "/admin"
-                                                        : "/dashboard"
+                                                        ? "/dashboard/admin"
+                                                        : "/dashboard/profile"
                                                 }
                                                 className="flex items-center gap-2"
                                             >
@@ -144,19 +142,18 @@ const Header = () => {
                                                 Profile
                                             </Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem asChild>
-                                            <Link
-                                                href={
-                                                    user?.role === "admin"
-                                                        ? "/admin/settings"
-                                                        : "/dashboard/profile"
-                                                }
-                                                className="flex items-center gap-2"
-                                            >
-                                                <Settings className="h-4 w-4" />{" "}
-                                                Settings
-                                            </Link>
-                                        </DropdownMenuItem>
+                                        {user?.role === "admin" && (
+                                            <DropdownMenuItem asChild>
+                                                <Link
+                                                    href="/dashboard/admin/settings"
+                                                    className="flex items-center gap-2"
+                                                >
+                                                    <Settings className="h-4 w-4" />{" "}
+                                                    Settings
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        )}
+
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
                                             onClick={() => signOut()}

@@ -14,6 +14,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from "../ui/select";
+import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 type LoginFormData = {
     fullname: string;
@@ -32,7 +34,7 @@ const RegisterForm = () => {
 
     const handleLoginForm = (data: LoginFormData) => {
         setLoading(true);
-        console.log("Register Form Data:", data);
+        console.log(data);
     };
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
