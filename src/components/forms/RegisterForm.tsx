@@ -32,7 +32,7 @@ const RegisterForm = () => {
         formState: { errors },
     } = useForm<LoginFormData>();
 
-    const handleLoginForm = (data: LoginFormData) => {
+    const handleLoginForm = async (data: LoginFormData) => {
         setLoading(true);
         console.log(data);
     };
@@ -108,12 +108,6 @@ const RegisterForm = () => {
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>Roles</SelectLabel>
-                                        <SelectItem
-                                            value="admin"
-                                            className="data-highlighted:bg-primary data-highlighted:text-foreground!"
-                                        >
-                                            Admin
-                                        </SelectItem>
                                         <SelectItem
                                             value="manager"
                                             className="data-highlighted:bg-primary data-highlighted:text-foreground!"

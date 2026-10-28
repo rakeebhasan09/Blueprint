@@ -17,8 +17,9 @@ export const { handlers, auth } = NextAuth({
                 password: {},
             },
             async authorize(credentials, req) {
+                console.log("Credentials:", credentials);
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`,
+                    `http://localhost:5000/api/v1/auth/login`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -48,11 +49,7 @@ export const { handlers, auth } = NextAuth({
             try {
                 const newUser = { user, account };
                 const response = await fetch(
-<<<<<<< HEAD
                     `${process.env.NEXT_PUBLIC_API_URL}/register`,
-=======
-                    `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/register`,
->>>>>>> af4d07c749c66f7c937ad0761a0e1722656b6b59
                     {
                         method: "POST",
                         headers: {
@@ -69,7 +66,6 @@ export const { handlers, auth } = NextAuth({
             }
         },
 
-<<<<<<< HEAD
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
@@ -85,14 +81,6 @@ export const { handlers, auth } = NextAuth({
                 session.user.id = token.id as string;
                 session.user.role =
                     (token.role as "user" | "manager" | "admin") ?? "user";
-=======
-        async session({ session, token }) {
-            if (session.user) {
-                session.user.id = token.id as string;
-                session.user.email = token.email as string;
-                session.user.name = token.name as string;
-                session.user.role = token.role as string;
->>>>>>> af4d07c749c66f7c937ad0761a0e1722656b6b59
             }
             return session;
         },
