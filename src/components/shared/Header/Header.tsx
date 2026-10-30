@@ -156,7 +156,11 @@ const Header = () => {
 
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem
-                                            onClick={() => signOut()}
+                                            onClick={() =>
+                                                signOut({
+                                                    redirectTo: "/login",
+                                                })
+                                            }
                                             className="flex items-center gap-2 text-destructive"
                                         >
                                             <LogOut className="h-4 w-4" />{" "}

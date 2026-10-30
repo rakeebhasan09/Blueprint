@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Building2, Eye, EyeOff } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { motion } from "framer-motion";
 import SocialLogin from "../shared/SocialLogin/SocialLogin";
 import {
@@ -16,11 +16,13 @@ import {
 } from "../ui/select";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-type LoginFormData = {
+type RegistrationFormData = {
     fullname: string;
     email: string;
     password: string;
+    role: "user" | "manager";
 };
 
 const RegisterForm = () => {
@@ -29,13 +31,55 @@ const RegisterForm = () => {
     const {
         register,
         handleSubmit,
+        control,
         formState: { errors },
-    } = useForm<LoginFormData>();
+    } = useForm<RegistrationFormData>();
+    const router = useRouter();
 
-    const handleLoginForm = async (data: LoginFormData) => {
+    const handleRegisterForm = async (data: RegistrationFormData) => {
         setLoading(true);
-        console.log(data);
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        emailPasswordRegistrationData: data,
+                    }),
+                },
+            );
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Registration failed!");
+            }
+
+            await Swal.fire({
+                title: "Registration Successful!",
+                text: "Your account has been created. Please log in.",
+                icon: "success",
+                confirmButtonText: "Go to Login",
+            });
+
+            router.push("/login");
+        } catch (error) {
+            await Swal.fire({
+                title: "Registration Failed!",
+                text:
+                    error instanceof Error
+                        ? error.message
+                        : "Please try again later.",
+                icon: "error",
+            });
+        } finally {
+            setLoading(false);
+        }
     };
+
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4">
             <motion.div
@@ -62,7 +106,7 @@ const RegisterForm = () => {
                 </div>
                 <div className="p-8 rounded-2xl bg-card shadow-card border border-border/50">
                     <form
-                        onSubmit={handleSubmit(handleLoginForm)}
+                        onSubmit={handleSubmit(handleRegisterForm)}
                         className="space-y-4"
                     >
                         <div>
@@ -77,7 +121,7 @@ const RegisterForm = () => {
                             />
                             {errors.fullname?.type === "required" && (
                                 <p className="text-xs text-destructive mt-1">
-                                    Email is required!
+                                    Full name is required!
                                 </p>
                             )}
                         </div>
@@ -101,29 +145,49 @@ const RegisterForm = () => {
                             <label className="text-sm font-medium text-foreground mb-1.5 block">
                                 Select Role
                             </label>
-                            <Select>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select a role" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Roles</SelectLabel>
-                                        <SelectItem
-                                            value="manager"
-                                            className="data-highlighted:bg-primary data-highlighted:text-foreground!"
-                                        >
-                                            Manager
-                                        </SelectItem>
-                                        <SelectItem
-                                            value="user"
-                                            className="data-highlighted:bg-primary data-highlighted:text-foreground!"
-                                        >
-                                            User
-                                        </SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
+                            <Controller
+                                name="role"
+                                control={control}
+                                rules={{ required: "Please select a role!" }}
+                                render={({ field }) => (
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select a role" />
+                                        </SelectTrigger>
+
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Roles</SelectLabel>
+
+                                                <SelectItem
+                                                    value="manager"
+                                                    className="data-highlighted:bg-primary data-highlighted:text-foreground!"
+                                                >
+                                                    Manager
+                                                </SelectItem>
+
+                                                <SelectItem
+                                                    value="user"
+                                                    className="data-highlighted:bg-primary data-highlighted:text-foreground!"
+                                                >
+                                                    User
+                                                </SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                )}
+                            />
+
+                            {errors.role && (
+                                <p className="text-xs text-destructive mt-1">
+                                    {errors.role.message}
+                                </p>
+                            )}
                         </div>
+
                         <div>
                             <label className="text-sm font-medium text-foreground mb-1.5 block">
                                 Password
@@ -139,7 +203,7 @@ const RegisterForm = () => {
                                 />
                                 {errors.password?.type === "required" && (
                                     <p className="text-xs text-destructive mt-1">
-                                        Email is required!
+                                        Password is required!
                                     </p>
                                 )}
                                 <button

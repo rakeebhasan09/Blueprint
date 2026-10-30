@@ -1,42 +1,18 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "./lib/auth";
 
-const privateRoutes = [
-    "/dashboard",
-    "/dashboard/bookings",
-    "/dashboard/reviews",
-    "/dashboard/profile",
-    "/dashboard/admin",
-    "/dashboard/admin/listings",
-    "/dashboard/admin/users",
-    "/dashboard/admin/orders",
-    "/dashboard/admin/analytics",
-    "/dashboard/admin/settings",
-];
+export const proxy = auth((request) => {
+    const isLoggedIn = Boolean(request.auth);
+    const { pathname, search } = request.nextUrl;
 
-// This function can be marked `async` if using `await` inside
-export async function proxy(request: NextRequest) {
-    const token = await getToken({
-        req: request,
-        secret: process.env.NEXTAUTH_SECRET,
-    });
+    if (pathname.startsWith("/dashboard") && !isLoggedIn) {
+        const loginUrl = new URL("/login", request.url);
 
-    const isAuthenticated = Boolean(token);
-    const reqPath = request.nextUrl.pathname;
+        loginUrl.searchParams.set("callbackUrl", `${pathname}${search}`);
 
-    const isPrivateReq = privateRoutes.some((route) =>
-        reqPath.startsWith(route),
-    );
-
-    if (!isAuthenticated && isPrivateReq) {
-        return NextResponse.redirect(
-            new URL(`/login?callbackUrl=${reqPath}`, request.url),
-        );
+        return Response.redirect(loginUrl);
     }
-    return NextResponse.next();
-}
+});
 
 export const config = {
-    matcher: "/dashboard/:path*",
+    matcher: ["/dashboard/:path*"],
 };

@@ -460,7 +460,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem
-                                        onClick={() => signOut()}
+                                        onClick={() =>
+                                            signOut({ redirectTo: "/login" })
+                                        }
                                         className="flex items-center gap-2 text-destructive data-highlighted:bg-primary"
                                     >
                                         <LogOut className="h-4 w-4" /> Logout
