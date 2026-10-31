@@ -2,44 +2,42 @@
 import { signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Swal from "sweetalert2";
+import { useSearchParams } from "next/navigation";
 
 const SocialLogin = () => {
     const [googleLoading, setGoogleLoading] = useState(false);
+    const [facebookLoading, setFacebookLoading] = useState(false);
     const params = useSearchParams();
     const callbackUrl = params.get("callbackUrl") || "/";
-    const router = useRouter();
 
-    // const handleGoogleLoging = async () => {
-    //     try {
-    //         setGoogleLoading(true);
-    //         const result = await signIn("google");
-    //         if (result?.ok) {
-    //             setGoogleLoading(false);
-    //             Swal.fire({
-    //                 icon: "success",
-    //                 title: "Login Successful",
-    //                 timer: 2000,
-    //                 showConfirmButton: false,
-    //             });
+    // Google login handler
+    const handleGoogleLoging = async () => {
+        try {
+            setGoogleLoading(true);
+            await signIn("google", {
+                redirectTo: callbackUrl || "/",
+            });
+        } catch (error) {
+            setGoogleLoading(false);
+        }
+    };
 
-    //             setTimeout(() => {
-    //                 router.push(callbackUrl);
-    //             }, 2000);
-    //             Redirect to the callback URL after successful Login
-    //             window.location.href = callbackUrl;
-    //             router.push(callbackUrl);
-    //         }
-    //     } catch (error) {
-    //         setGoogleLoading(false);
-    //         Swal.fire(
-    //             "Error",
-    //             "Failed to log in with Google. Please try again.",
-    //             "error",
-    //         );
-    //     }
-    // };
+    // Facebook login handler
+    const handleFacebookLogin = async () => {
+        setFacebookLoading(true);
+        console.log("Facebook login initiated");
+        try {
+            await signIn("facebook", {
+                redirectTo: callbackUrl || "/",
+            });
+        } catch (error) {
+            setFacebookLoading(false);
+            console.error(
+                "Error occurred while logging in with Facebook:",
+                error,
+            );
+        }
+    };
 
     return (
         <div className="grid grid-cols-2 gap-3 mb-4">
@@ -47,10 +45,7 @@ const SocialLogin = () => {
             <Button
                 variant="outline"
                 className="rounded-xl h-11 text-sm"
-                onClick={() => {
-                    setGoogleLoading(true);
-                    signIn("google", { callbackUrl });
-                }}
+                onClick={handleGoogleLoging}
                 disabled={googleLoading}
             >
                 <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
@@ -78,7 +73,8 @@ const SocialLogin = () => {
             <Button
                 variant="outline"
                 className="rounded-xl h-11 text-sm"
-                onClick={() => {}}
+                onClick={handleFacebookLogin}
+                disabled={facebookLoading}
             >
                 <svg
                     className="h-4 w-4 mr-2"

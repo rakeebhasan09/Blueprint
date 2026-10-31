@@ -1,17 +1,25 @@
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-// import Credentials from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import FacebookProvider from "next-auth/providers/facebook";
 
 type UserRole = "user" | "manager" | "admin";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     providers: [
-        Google({
+        // Google Provider
+        GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         }),
 
+        // Facebook Provider
+        FacebookProvider({
+            clientId: process.env.FACEBOOK_CLIENT_ID,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+        }),
+
+        // Credentials Provider
         CredentialsProvider({
             name: "Credentials",
             credentials: {
@@ -75,16 +83,54 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
     callbacks: {
         async signIn({ user, account }) {
-            // Credentials users are authenticated by your backend.
+            // Credentials login is handled by authorize().
             if (account?.provider === "credentials") {
                 return true;
             }
 
-            // Register or synchronize Google users with your backend.
-            if (account?.provider === "google") {
+            // Check whether login is through Google or Facebook.
+            const isSocialProvider =
+                account?.provider === "google" ||
+                account?.provider === "facebook";
+
+            if (isSocialProvider) {
                 try {
+                    // Email is required by your current backend API.
+                    if (!user.email) {
+                        console.error("Social login email not found");
+                        return false;
+                    }
+
+                    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
+                    if (!API_URL) {
+                        console.error("API URL is missing");
+                        return false;
+                    }
+
+                    // Check whether the user already exists.
                     const response = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_URL}/auth/register`,
+                        `${API_URL}/users?email=${encodeURIComponent(user.email)}`,
+                        { cache: "no-store" },
+                    );
+
+                    if (!response.ok) {
+                        console.error("User lookup failed:", response.status);
+                        return false;
+                    }
+
+                    const data = await response.json();
+                    const existingUser = data?.users?.[0];
+
+                    // Existing user: skip registration.
+                    if (existingUser?._id || existingUser?.id) {
+                        console.log("Existing user found");
+                        return true;
+                    }
+
+                    // New user: register in the backend.
+                    const registerResponse = await fetch(
+                        `${API_URL}/auth/register`,
                         {
                             method: "POST",
                             headers: {
@@ -97,27 +143,29 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         },
                     );
 
-                    if (!response.ok) {
+                    if (!registerResponse.ok) {
                         console.error(
-                            "Google user registration failed:",
-                            response.status,
+                            "Social registration failed:",
+                            registerResponse.status,
                         );
                         return false;
                     }
 
                     return true;
                 } catch (error) {
-                    console.error("Google registration failed:", error);
+                    console.error("Social login failed:", error);
                     return false;
                 }
             }
 
-            return true;
+            // Reject unsupported providers.
+            return false;
         },
 
         async jwt({ token, user, account }) {
+            // This runs during initial sign-in.
             if (user) {
-                // Credentials login: use the user returned by authorize().
+                // Credentials login.
                 if (account?.provider === "credentials") {
                     token.id = user.id;
                     token.email = user.email;
@@ -126,35 +174,41 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         "user";
                 }
 
-                // Google login: retrieve the existing database user.
-                else if (account?.provider === "google" && user.email) {
-                    try {
-                        const response = await fetch(
-                            `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/users?email=${encodeURIComponent(user.email)}`,
-                        );
+                // Google or Facebook login.
+                const isSocialProvider =
+                    account?.provider === "google" ||
+                    account?.provider === "facebook";
 
-                        if (!response.ok) {
-                            throw new Error(
-                                `User lookup failed: ${response.status}`,
-                            );
-                        }
+                if (isSocialProvider && user.email) {
+                    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-                        const data = await response.json();
-                        const dbUser = data?.users?.[0];
-
-                        if (!dbUser?._id) {
-                            throw new Error(
-                                "Google user was not found in the database.",
-                            );
-                        }
-
-                        token.id = String(dbUser._id);
-                        token.email = dbUser.email;
-                        token.role = dbUser.role ?? "user";
-                    } catch (error) {
-                        console.error("Google user lookup failed:", error);
-                        throw error;
+                    if (!API_URL) {
+                        throw new Error("API URL is missing");
                     }
+
+                    // Retrieve database user information.
+                    const response = await fetch(
+                        `${API_URL}/users?email=${encodeURIComponent(user.email)}`,
+                        { cache: "no-store" },
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Database user lookup failed");
+                    }
+
+                    const data = await response.json();
+                    const dbUser = data?.users?.[0];
+
+                    const dbUserId = dbUser?._id ?? dbUser?.id;
+
+                    if (!dbUserId) {
+                        throw new Error("Database user not found");
+                    }
+
+                    // Save database information in JWT.
+                    token.id = String(dbUserId);
+                    token.email = dbUser.email;
+                    token.role = dbUser.role ?? "user";
                 }
             }
 
